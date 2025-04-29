@@ -168,21 +168,8 @@
         </a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-          <span class="icon-menu"></span>
-        </button>
-        <ul class="navbar-nav mr-lg-2">
-          <li class="nav-item nav-search d-none d-lg-block">
-            <div class="input-group">
-              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                <span class="input-group-text" id="search">
-                  <i class="icon-search"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search notifications..." aria-label="search" aria-describedby="search">
-            </div>
-          </li>
-        </ul>
+        
+     
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
             <a class="nav-link" href="{% url 'vendor_dashboard' %}">
@@ -302,11 +289,7 @@
                                   <p class="notification-message">{{ notification.message }}</p>
                                 </div>
                                 <div class="notification-actions">
-                                  {% if not notification.is_read %}
-                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">
-                                      <i class="ti-check"></i> Mark as Read
-                                    </a>
-                                  {% endif %}
+                                 
                                 </div>
                               </div>
                             </div>
@@ -341,11 +324,7 @@
                                   <p class="notification-message">{{ notification.message }}</p>
                                 </div>
                                 <div class="notification-actions">
-                                  {% if not notification.is_read %}
-                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">
-                                      <i class="ti-check"></i> Mark as Read
-                                    </a>
-                                  {% endif %}
+                               
                                 </div>
                               </div>
                             </div>
@@ -380,11 +359,7 @@
                                   <p class="notification-message">{{ notification.message }}</p>
                                 </div>
                                 <div class="notification-actions">
-                                  {% if not notification.is_read %}
-                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">
-                                      <i class="ti-check"></i> Mark as Read
-                                    </a>
-                                  {% endif %}
+                             
                                 </div>
                               </div>
                             </div>
@@ -419,11 +394,7 @@
                                   <p class="notification-message">{{ notification.message }}</p>
                                 </div>
                                 <div class="notification-actions">
-                                  {% if not notification.is_read %}
-                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">
-                                      <i class="ti-check"></i> Mark as Read
-                                    </a>
-                                  {% endif %}
+                                
                                 </div>
                               </div>
                             </div>
@@ -466,11 +437,7 @@
                                   <div class="notification-content">
                                     <p class="notification-message">{{ notification.message }}</p>
                                   </div>
-                                  <div class="notification-actions">
-                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">
-                                      <i class="ti-check"></i> Mark as Read
-                                    </a>
-                                  </div>
+                                 
                                 </div>
                               </div>
                             {% endif %}

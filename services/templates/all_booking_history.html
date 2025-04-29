@@ -277,6 +277,8 @@
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
+                  <th>Date & time of service</th>
+
                     <th>Customer</th>
                     <th>Vendor</th>
                     <th>Service</th>
@@ -293,6 +295,8 @@
                 {% for sb in service_bookings %}
                 {%if sb.get_service_type_display != "Transport Service"%}
                 <tr>
+                  <td>{{ sb.service_date }} & {{ sb.service_time }}</td>  
+
                     <td>{{ sb.customer.customer.username }}</td>
                     <td>{{ sb.vendor.user.username }}</td>
                     <td>{{ sb.service.service_name }}</td>            
@@ -322,6 +326,8 @@
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
+                  <th>Date & time of service</th>
+
                     <th>Customer</th>
                     <th>Vendor</th>
                     <th>Vehicle Type</th>
@@ -340,6 +346,8 @@
                 {% for sb in service_bookings %}
                 {%if sb.get_service_type_display == "Transport Service"%}
                 <tr>
+                  <td>{{ sb.service_date }} & {{ sb.service_time }}</td>  
+
                     <td>{{ sb.customer.customer.username }}</td>
                     <td>{{ sb.vendor.user.username }}</td>
                     <td>{{ sb.service.service_name }}</td>

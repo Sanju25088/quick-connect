@@ -156,18 +156,7 @@
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
-        <ul class="navbar-nav mr-lg-2">
-          <li class="nav-item nav-search d-none d-lg-block">
-            <div class="input-group">
-              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                <span class="input-group-text" id="search">
-                  <i class="icon-search"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
-            </div>
-          </li>
-        </ul>
+        
         <ul class="navbar-nav navbar-nav-right">
           
             <li class="nav-item nav-profile dropdown">
@@ -313,6 +302,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                <th>Date & time of service</th>
                                 <th>Service</th>
                                 <th>Vendor</th>
                                 <th>Date & Time</th>
@@ -328,6 +318,8 @@
                             {% for sb in service_bookings %}
                             {%if sb.get_service_type_display != "Transport Service"%}
                             <tr>
+                                <td>{{ sb.service_date }} & {{ sb.service_time }}</td>  
+
                                 <td>{{ sb.service.service_name }}</td>
                                 <td>{{ sb.vendor.business_name }}</td>
                                 <td>{{ sb.service_date }} & {{ sb.service_time }}</td>
@@ -367,6 +359,7 @@
                           <table class="table table-striped">
                               <thead>
                                   <tr>
+                                    <th>Date & time of service</th>
                                       <th>Service</th>
                                       <th>Vendor</th>
                                       <th>Date & Time</th>
@@ -384,6 +377,8 @@
                                   {% for sb in service_bookings %}
                                   {%if sb.get_service_type_display == "Transport Service"%}
                                   <tr>
+                                    <td>{{ sb.service_date }} & {{ sb.service_time }}</td>  
+
                                       <td>{{ sb.service.service_name }}</td>
                                       <td>{{ sb.vendor.business_name }}</td>
                                       <td>{{ sb.service_date }} & {{ sb.service_time }}</td>

@@ -1277,6 +1277,7 @@ body {
                             <thead>
                                 <tr>
                                     <th>Booking ID</th>
+                                    <th>Date & time of service</th>
                                     <th>Vendor Name</th>
                                     <th>Shop</th>
                                     <th>Service</th>
@@ -1292,6 +1293,8 @@ body {
                                     {% if booking.service_type != "transport" %}
                                     <tr data-status="{{ booking.status }}">
                                         <td>{{ booking.id }}</td>
+                                        <td>{{ booking.service_date }} & {{ booking.service_time }}</td>  
+
                                         <td>{{ booking.vendor.user.username }}</td>  
                                         <td>{{ booking.vendor.business_name }}</td>  
                                         <td>{{ booking.service.service_name }}</td>
@@ -1340,6 +1343,7 @@ body {
                             <thead>
                                 <tr>
                                     <th>Booking ID</th>
+                                    <th>Date & time of service</th>
                                     <th>Vendor Name</th>
                                     <th>Shop</th>
                                     <th>Car Type</th>
@@ -1359,6 +1363,7 @@ body {
                                     {% if booking.service_type == "transport" %}
                                     <tr data-status="{{ booking.status }}">
                                         <td>{{ booking.id }}</td>
+                                        <td>{{ booking.service_date }} & {{ booking.service_time }}</td>  
                                         <td>{{ booking.vendor.user.username }}</td>  
                                         <td>{{ booking.vendor.business_name }}</td>  
                                         <td>{{ booking.service.service_name }}</td>
