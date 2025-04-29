@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .back-btn:hover {
+            background-color: #45a049;
+        }
+        .notification-card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .notification-card p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>My Notifications</h2>
+        <a href="{% url 'customer_dashboard' %}" class="back-btn">Back to Dashboard</a>
+    </div>
+
+    {% if notifications %}
+        {% for notification in notifications %}
+            <div class="notification-card">
+                <p><strong>Message:</strong> {{ notification.message }}</p>
+                <p><strong>Status:</strong> {% if notification.is_read %}Read{% else %}Unread{% endif %}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No notifications available.</p>
+    {% endif %}
+</body>
+</html>

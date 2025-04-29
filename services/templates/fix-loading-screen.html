@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Screen Test</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Loading screen styles */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            width: 300px;
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px auto;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #5856D6;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <img src="https://via.placeholder.com/150" alt="Logo" class="loading-logo">
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div class="progress-text">Loading... <span id="progress-percent">0</span>%</div>
+        </div>
+    </div>
+    
+    <!-- Page Content -->
+    <div class="main-content">
+        <h1>Page Content Here</h1>
+        <p>This content will be shown after loading is complete.</p>
+    </div>
+    
+    <!-- Simple, reliable JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get loading screen elements
+            const loadingScreen = document.getElementById('loading-screen');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            
+            // Start at 0
+            let progress = 0;
+            progressBar.style.width = '0%';
+            
+            // Simulate loading progress
+            const interval = setInterval(function() {
+                // Increment progress by a small amount each time
+                progress += 2;
+                
+                // Update the progress bar and text
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = progress;
+                
+                // When loading is complete
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Hide loading screen
+                    setTimeout(function() {
+                        loadingScreen.style.opacity = '0';
+                        
+                        // Make it non-interactive after fade
+                        setTimeout(function() {
+                            loadingScreen.style.display = 'none';
+                        }, 800);
+                    }, 500);
+                }
+            }, 50);
+        });
+    </script>
+</body>
+</html>

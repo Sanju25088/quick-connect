@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="checkout-container">
+    <h2 class="checkout-title">Checkout</h2>
+    
+    <div class="checkout-grid">
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            
+            <div class="vendor-groups">
+                {% for group in vendor_groups %}
+                    <div class="vendor-section">
+                        <h4>{{ group.vendor.business_name }}</h4>
+                        <div class="vendor-items">
+                            {% for item in group.items %}
+                                <div class="checkout-item">
+                                    <span class="item-name">{{ item.product.product_name }}</span>
+                                    <span class="item-quantity">x{{ item.quantity }}</span>
+                                    <span class="item-price">₹{{ item.total|floatformat:2 }}</span>
+                                </div>
+                            {% endfor %}
+                            <div class="vendor-subtotal">
+                                Subtotal: ₹{{ group.subtotal|floatformat:2 }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-total">
+                <div class="total-row">
+                    <span>Total Items:</span>
+                    <span>{{ total_items }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Total Amount:</span>
+                    <span>₹{{ cart_total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delivery-details">
+            <h3>Delivery Details</h3>
+            <div class="customer-info">
+                <p><strong>Name:</strong> {{ customer_info.customer.get_full_name }}</p>
+                <p><strong>Contact:</strong> {{ customer_info.contact_no }}</p>
+                <p><strong>Address:</strong> {{ customer_info.permanent_address }}</p>
+                {% if customer_info.location_name %}
+                    <p><strong>Location:</strong> {{ customer_info.location_name }}</p>
+                {% endif %}
+            </div>
+
+            <div class="delivery-options">
+                <h4>Delivery Options</h4>
+                <div class="option-group">
+                    <label>
+                        <input type="radio" name="delivery_type" value="home_delivery" checked>
+                        Home Delivery
+                    </label>
+                    <label>
+                        <input type="radio" name="delivery_type" value="pick_up">
+                        Pick Up
+                    </label>
+                </div>
+            </div>
+
+            <div class="payment-options">
+                <h4>Payment Method</h4>
+                <div class="option-group">
+                    <label>
+                        <input type="radio" name="payment_method" value="cod" checked>
+                        Cash on Delivery
+                    </label>
+                    <label>
+                        <input type="radio" name="payment_method" value="upi">
+                        UPI Payment
+                    </label>
+                </div>
+            </div>
+
+            <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.checkout-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.checkout-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.order-summary, .delivery-details {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.vendor-section {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.vendor-section h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.checkout-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.item-name {
+    flex: 1;
+}
+
+.item-quantity {
+    margin: 0 1rem;
+}
+
+.vendor-subtotal {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.order-total {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px solid #dee2e6;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.total-row:last-child {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.customer-info {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
+.customer-info p {
+    margin-bottom: 0.5rem;
+}
+
+.delivery-options, .payment-options {
+    margin-bottom: 1.5rem;
+}
+
+.option-group {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.option-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.place-order-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.place-order-btn:hover {
+    background: #218838;
+}
+
+/* Loading spinner */
+.loading {
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+async function placeOrder() {
+    const deliveryType = document.querySelector('input[name="delivery_type"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    const button = document.querySelector('.place-order-btn');
+    button.classList.add('loading');
+    button.disabled = true;
+
+    try {
+        const response = await fetch('/place_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                delivery_type: deliveryType,
+                payment_method: paymentMethod
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            window.location.href = data.redirect_url;
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to place order');
+    } finally {
+        button.classList.remove('loading');
+        button.disabled = false;
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 

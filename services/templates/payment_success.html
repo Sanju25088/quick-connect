@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Order Confirmation - Quick Connect</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  <style>
+    .success-icon {
+      font-size: 80px;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+    
+    .order-success {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    .checkout-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .checkout-steps:before {
+      content: "";
+      position: absolute;
+      top: 24px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+    
+    .step {
+      position: relative;
+      z-index: 1;
+      background: white;
+      padding: 0 15px;
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #5B63FE;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 20px;
+    }
+    
+    .animate-success {
+      animation: successPulse 2s ease-in-out;
+    }
+    
+    @keyframes successPulse {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .order-details {
+      background-color: #f8f9ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      text-align: left;
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed #e0e0e0;
+      padding-bottom: 10px;
+    }
+    
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+    
+    .next-steps {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <!-- Navigation bar -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="{% url 'customer_dashboard' %}">
+          <img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/>
+        </a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="container-fluid page-body-wrapper">
+      <!-- Main content -->
+      <div class="main-panel" style="width: 100%;">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="row">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                  <h3 class="font-weight-bold text-primary">Order Confirmation</h3>
+                  <h6 class="font-weight-normal mb-0">Thank you for your purchase!</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkout Steps -->
+          <div class="checkout-steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-title">Cart</div>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-title">Checkout</div>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-title">Confirmation</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8 offset-md-2">
+              <div class="card">
+                <div class="card-body">
+                  <div class="order-success">
+                    <i class="ti-check-box success-icon animate-success"></i>
+                    <h2 class="font-weight-bold">Your Order is Confirmed!</h2>
+                    <p class="text-muted mb-4">We've accepted your order, and we're getting it ready for delivery.</p>
+                    
+                    <div class="order-details mx-auto" style="max-width: 500px;">
+                      <h4 class="mb-3">Order Details</h4>
+                      <div class="detail-item">
+                        <span>Order Number:</span>
+                        <span class="font-weight-bold">ORD-{{ timestamp }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span>Payment Method:</span>
+                        <span>{{ payment_method }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span>Delivery Method:</span>
+                        <span>{{ delivery_method }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span>Amount Paid:</span>
+                        <span class="font-weight-bold text-success">₹{{ total_amount }}</span>
+                      </div>
+                    </div>
+                    
+                    <p class="mt-4">
+                      A confirmation email has been sent to <strong>{{ user.email }}</strong>.
+                      <br>You will receive updates about your order status soon.
+                    </p>
+                    
+                    <div class="next-steps">
+                      <a href="{% url 'customer_dashboard' %}" class="btn btn-primary">
+                        <i class="ti-home"></i> Return to Home
+                      </a>
+                      <a href="{% url 'customer_booking_history' %}" class="btn btn-outline-primary">
+                        <i class="ti-clipboard"></i> View Order History
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- Footer -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright  Quick Connect 2025. All rights reserved.</span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+  <script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="/media/assets1/js/dataTables.select.min.js"></script>
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script>
+    // Generate a timestamp for the order number
+    document.addEventListener('DOMContentLoaded', function() {
+      const date = new Date();
+      const timestamp = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
+      
+      // Find the timestamp placeholder and replace it
+      const orderNumberElement = document.querySelector('.detail-item span.font-weight-bold');
+      if (orderNumberElement) {
+        orderNumberElement.textContent = `ORD-${timestamp}`;
+      }
+    });
+  </script>
+  <!-- End custom js for this page-->
+</body>
+
+</html>

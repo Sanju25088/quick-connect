@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Search Results</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  
+  <style>
+    /* Enhanced Search Bar */
+    .search-container {
+      position: relative;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .search-form {
+      display: flex;
+      width: 100%;
+    }
+
+    #navbar-search-input {
+      padding-right: 40px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      border: 1px solid #e4e9f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    #navbar-search-input:focus {
+      border-color: #5B63FE;
+      box-shadow: 0 0 0 0.2rem rgba(91, 99, 254, 0.25);
+    }
+
+    #navbar-search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    #navbar-search-icon .input-group-text {
+      border: none;
+      background: transparent;
+    }
+    
+    /* Enhanced Cards */
+    .vendor-card {
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    .vendor-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .card {
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .card:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+      color: #5B63FE;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(91, 99, 254, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .back-btn {
+      border-radius: 30px;
+      padding: 10px 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+      transform: translateX(-5px);
+    }
+    
+    /* Table Enhancements */
+    .table thead th {
+      background-color: #f8f9ff;
+      border-top: none;
+      border-bottom: 2px solid rgba(91, 99, 254, 0.2);
+      color: #5B63FE;
+      font-weight: 600;
+    }
+    
+    .table tbody tr {
+      transition: all 0.2s;
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(91, 99, 254, 0.03);
+    }
+    
+    .search-info {
+      background: linear-gradient(to right, #5B63FE, #7B78FF);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-info h3 {
+      margin: 0;
+      font-weight: 700;
+    }
+    
+    .content-wrapper {
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="{% url 'customer_dashboard' %}"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="{% url 'customer_dashboard' %}"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group search-container">
+              <form action="{% url 'search' %}" method="GET" class="search-form">
+                <input type="text" class="form-control" id="navbar-search-input" name="query" value="{{ query }}" placeholder="Search vendors, services, products..." aria-label="search" aria-describedby="search">
+              </form>
+              <div class="input-group-prepend" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link" href="{% url 'customer_dashboard' %}">
+              <button class="btn btn-primary back-btn"><i class="ti-arrow-left mr-1"></i> Back to Dashboard</button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel" style="width: 100%">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="search-info">
+                <h3>Search Results for "{{ query }}"</h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendors Results -->
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="text-primary font-weight-bold">Search Results for "{{ query }}"</h3>
+                  <div class="vendor-container">
+                    {% if vendor_details %}
+                      {% for vendor_detail in vendor_details %}
+                      <div class="vendor-card mb-4 p-3 border rounded shadow-sm" id="vendor_{{ vendor_detail.vendor.id }}">
+                        <h5>{{ vendor_detail.vendor.business_name }}</h5>
+                        <p><strong>Location: </strong>{{ vendor_detail.vendor.location_name }}</p>
+                        <p><strong>Service Type available:</strong> 
+                          {% if vendor_detail.vendor.service_type == 'both' %}
+                            Home Delivery and Pick Away
+                          {% else %}
+                            {{ vendor_detail.vendor.service_type }}
+                          {% endif %}
+                        </p>
+                      
+                        {% if vendor_detail.vendor.category == "grocery" or vendor_detail.items %}
+                          <button class="btn btn-primary btn-block mb-3 toggle-items-btn" 
+                                type="button" data-target="#addItemForm_{{ vendor_detail.vendor.id }}">
+                              View Items for Ordering
+                          </button>
+                        {% endif %}
+                        
+                        <!-- Unique Collapse for Each Vendor's Items -->
+                        <div class="collapse vendor-items" id="addItemForm_{{ vendor_detail.vendor.id }}">
+                          <h6>Available Items:</h6>
+                          <form method="POST" action="{% url 'book_item' vendor_detail.vendor.id %}" onsubmit="return validateServiceType()">
+                            {% csrf_token %}
+                            
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Product Name</th>
+                                  <th>Price</th>
+                                  <th>Stock</th>
+                                  <th>Quantity</th>
+                                  <th>Cost</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for item in vendor_detail.items %}
+                                <tr>
+                                  <td>{{ item.product_name }}</td>
+                                  <td class="price">₹{{ item.price }}</td>
+                                  <td>{{ item.quantity }}</td>
+                                  <td>
+                                    <input type="number" name="quantity_{{ item.id }}" 
+                                          class="quantity-input" min="0" max="{{ item.quantity }}" 
+                                          data-price="{{ item.price }}" data-cost-id="cost_{{ item.id }}" 
+                                          value="0">
+                                  </td>
+                                  <td id="cost_{{ item.id }}">₹0.00</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="5" class="text-center">No products available.</td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                        
+                            <!-- Total Amount Display -->
+                            <h5>Total Amount: <span id="total-amount">0.00</span></h5>
+                        
+                            <label>📦 Choose Service Type:</label><br>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="service_type" id="pick_up_{{ vendor_detail.vendor.id }}" value="pick_up">
+                              <label class="form-check-label" for="pick_up_{{ vendor_detail.vendor.id }}">🛍️ Pick Up</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="service_type" id="home_delivery_{{ vendor_detail.vendor.id }}" value="home_delivery">
+                              <label class="form-check-label" for="home_delivery_{{ vendor_detail.vendor.id }}">🚚 Home Delivery</label>
+                            </div>
+                            <p id="service-error" style="color: red; display: none;">⚠️ Please select a service type.</p>
+                        
+                            <button type="submit" class="btn btn-primary">Book</button>
+                          </form>
+                        </div>
+                        
+                        {% if vendor_detail.vendor.category == "service_based" or vendor_detail.services %}
+                          <button class="btn btn-primary btn-block mb-3 toggle-items-btn" 
+                                type="button" data-target="#addServiceForm_{{ vendor_detail.vendor.id }}">
+                              View Services
+                          </button>
+                        
+                          <div class="collapse vendor-items" id="addServiceForm_{{ vendor_detail.vendor.id }}">
+                            <h6>Available Services:</h6>
+                            <form method="POST" action="{% url 'book_service' vendor_detail.vendor.id %}">
+                              {% csrf_token %}
+                      
+                              <table class="table table-striped">
+                                <thead>
+                                  <tr>
+                                    <th>Service Name</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Select</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for service in vendor_detail.services %}
+                                  <tr>
+                                    <td>{{ service.service_name }}</td>
+                                    <td>{{ service.description }}</td>
+                                    <td>₹{{ service.price }}</td>
+                                    <td>
+                                      <input type="radio" name="service_id" value="{{ service.id }}" required>
+                                    </td>
+                                  </tr>
+                                  {% empty %}
+                                  <tr>
+                                    <td colspan="4" class="text-center">No services available.</td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                      
+                              <label>📅 Service Date:</label>
+                              <input type="date" name="service_date" required class="form-control mb-2">
+                      
+                              <label>⏰ Service Time:</label>
+                              <input type="time" name="service_time" required class="form-control mb-2">
+                      
+                              <label>🛠️ Choose Service Type:</label><br>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="service_type" id="in_store_{{ vendor_detail.vendor.id }}" value="in_store">
+                                <label class="form-check-label" for="in_store_{{ vendor_detail.vendor.id }}">🏪 In-Store Service</label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="service_type" id="home_service_{{ vendor_detail.vendor.id }}" value="home_service">
+                                <label class="form-check-label" for="home_service_{{ vendor_detail.vendor.id }}">🏠 Home Service</label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="service_type" id="transport_{{ vendor_detail.vendor.id }}" value="transport">
+                                <label class="form-check-label" for="transport_{{ vendor_detail.vendor.id }}">🚗 Transport Service</label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="service_type" id="pick_up_serv_{{ vendor_detail.vendor.id }}" value="pick_up">
+                                <label class="form-check-label" for="pick_up_serv_{{ vendor_detail.vendor.id }}">🛍️ Pick Up</label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="service_type" id="home_delivery_serv_{{ vendor_detail.vendor.id }}" value="home_delivery">
+                                <label class="form-check-label" for="home_delivery_serv_{{ vendor_detail.vendor.id }}">🚚 Home Delivery</label>
+                              </div>
+                      
+                              <label>📍 Address (if required):</label>
+                              <input type="text" name="address" class="form-control mb-2">
+                              
+                              {% if vendor_detail.vendor.service_type == "ride_service" %}
+                              <label>📍 Pickup Location (for transport):</label>
+                              <input type="text" name="pickup_location" class="form-control mb-2">
+                      
+                              <label>📍 Dropoff Location (for transport):</label>
+                              <input type="text" name="dropoff_location" class="form-control mb-2">
+                      
+                              
+                              {% endif %}
+                              
+                              <button type="submit" class="btn btn-success">Book Service</button>
+                            </form>
+                          </div>
+                        {% endif %}
+                      </div>
+                      {% endfor %}
+                    {% else %}
+                      <p>No vendors found matching your search.</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services Results -->
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Services</h4>
+                  {% if services %}
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Service Name</th>
+                          <th>Description</th>
+                          <th>Price</th>
+                          <th>Location</th>
+                          <th>Provider</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for service in services %}
+                        <tr>
+                          <td>{{ service.service_name }}</td>
+                          <td>{{ service.description|truncatechars:50 }}</td>
+                          <td>₹{{ service.price }}</td>
+                          <td>{{ service.location }}</td>
+                          <td>{{ service.vendor.business_name }}</td>
+                          <td>
+                            <a href="{% url 'customer_dashboard' %}#vendor_{{ service.vendor.id }}" class="btn btn-outline-primary btn-sm">View Provider</a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <p>No services found matching your search.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Results -->
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Products</h4>
+                  {% if products %}
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Product Name</th>
+                          <th>Price</th>
+                          <th>Available Quantity</th>
+                          <th>Provider</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for product in products %}
+                        <tr>
+                          <td>{{ product.product_name }}</td>
+                          <td>₹{{ product.price }}</td>
+                          <td>{{ product.quantity }}</td>
+                          <td>{{ product.vendor.business_name }}</td>
+                          <td>
+                            <a href="{% url 'customer_dashboard' %}#vendor_{{ product.vendor.id }}" class="btn btn-outline-primary btn-sm">View Provider</a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <p>No products found matching your search.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright  2025. Quick Connect 2.0. All rights reserved.</span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+  <script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="/media/assets1/js/dataTables.select.min.js"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/media/assets1/js/dashboard.js"></script>
+  <script src="/media/assets1/js/Chart.roundedBarCharts.js"></script>
+  <!-- End custom js for this page-->
+  <script>
+    // Function to calculate the total cost for products
+    function updateTotal() {
+      let total = 0;
+      const quantityInputs = document.querySelectorAll('.quantity-input');
+      
+      quantityInputs.forEach(input => {
+        const price = parseFloat(input.getAttribute('data-price'));
+        const quantity = parseInt(input.value) || 0;
+        const cost = price * quantity;
+        
+        // Update the individual item cost display
+        const costId = input.getAttribute('data-cost-id');
+        const costElement = document.getElementById(costId);
+        if (costElement) {
+          costElement.textContent = '₹' + cost.toFixed(2);
+        }
+        
+        total += cost;
+      });
+      
+      // Update the total amount
+      const totalAmountElement = document.getElementById('total-amount');
+      if (totalAmountElement) {
+        totalAmountElement.textContent = total.toFixed(2);
+      }
+    }
+
+    // Validate service type selection
+    function validateServiceType() {
+      const serviceTypeInputs = document.querySelectorAll('input[name="service_type"]:checked');
+      if (serviceTypeInputs.length === 0) {
+        document.getElementById('service-error').style.display = 'block';
+        return false;
+      }
+      return true;
+    }
+
+    // Initialize the toggle buttons for vendor items and services
+    document.addEventListener("DOMContentLoaded", function() {
+      // Set up event handlers for quantity inputs
+      const quantityInputs = document.querySelectorAll('.quantity-input');
+      quantityInputs.forEach(input => {
+        input.addEventListener('input', updateTotal);
+      });
+      
+      // Set up toggle buttons
+      const toggleButtons = document.querySelectorAll('.toggle-items-btn');
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const target = this.getAttribute('data-target');
+          const targetElement = document.querySelector(target);
+          
+          if (targetElement) {
+            // Toggle the collapse state
+            if (targetElement.classList.contains('show')) {
+              targetElement.classList.remove('show');
+            } else {
+              // Close any other open items first
+              document.querySelectorAll('.vendor-items.show').forEach(item => {
+                if (item !== targetElement) {
+                  item.classList.remove('show');
+                }
+              });
+              
+              targetElement.classList.add('show');
+            }
+          }
+        });
+      });
+      
+      // Calculate totals on page load
+      updateTotal();
+    });
+  </script>
+</body>
+</html>

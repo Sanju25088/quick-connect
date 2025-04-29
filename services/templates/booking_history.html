@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Customer Dash</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+<style>
+  
+  .my-details {
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      color: #007bff; /* A more vibrant blue */
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+  }
+
+  .my-details:hover {
+      color: white;
+      background-color: #007bff;
+  }
+
+  /* Ensuring dropdown menu is scrollable */
+  .dropdown-menu {
+      max-height: 300px; /* Restrict height */
+      overflow-y: auto;  /* Enable vertical scrolling */
+      width: 450px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Customer details section with enforced scrollability */
+  .customer-info {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 5px;
+      max-height: 150px; /* Ensure scrollability */
+      overflow-y: auto;
+  }
+
+  /* Star rating design */
+  .star-rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: start;
+      font-size: 2rem;
+      margin-bottom: -10px; /* Reduce space below stars */
+  }
+
+  .star-rating input {
+      display: none;
+  }
+
+  .star-rating label {
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-right: 5px; /* Reduce spacing between stars */
+  }
+
+  .star-rating input:checked ~ label {
+      color: gold;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+      color: gold;
+  }
+
+  /* Toggle Button */
+  .toggle-info-btn {
+      display: block;
+      margin-top: 10px;
+      background: #ffbf00;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+  }
+
+  .toggle-info-btn:hover {
+      background: #d4a000;
+      text-decoration: none;
+  }
+
+  /* Location text formatting */
+  .location-text {
+      display: block;
+      max-width: 300px; /* Adjust as needed */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap; /* Preserves line breaks */
+      line-height: 1.5; /* Increases readability */
+  }
+</style>
+
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group">
+              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+         
+          <li class="nav-item nav-profile dropdown">
+              {% if user.profile_image %}
+              <img src="{{ user.profile_image.url }}" alt="profile"/>
+              {% else %}
+                <img src="/media/assets1/images/default_profile.png" alt="profile"/>
+              {% endif %}
+            </a>
+            
+          <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="ti-settings"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close ti-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'vendor_dashboard' %}">
+                  <i class="icon-grid menu-icon"></i>
+                  <span class="menu-title">Back to DashBoard </span>
+                  <i class="menu-arrow"></i>
+                </a>
+              </li>
+       
+     
+    
+
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+      
+          <!-- Header with User Info and Date -->
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="d-flex align-items-start justify-content-between">
+                <h3 class="font-weight-bold" style="margin-top: -5px; margin-left: -5px;">
+                  {{ user.user_type }} {{ user.first_name }}
+                </h3>
+                <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <i class="mdi mdi-calendar"></i> <span id="currentDate"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Booking History Section -->
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">My Booking History</h4>
+      
+                  <!-- Grocery Category Table -->
+                  {% if user.category == "grocery" %}
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Customer Name</th>
+                          <th>Items & Prices</th>
+                          <th>Total Price</th>
+                          <th>Service Type</th>
+                          <th>Address</th>
+                          <th>Booking Time</th>
+                          <th>Delivered Time</th>
+                          <th>Payment Method</th>
+                          <th>Payment Status</th>
+                          <th>Status</th>
+                          <th>Update Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for booking in bookings %}
+                        <tr data-status="{{ booking.status }}">
+                          <td>{{ booking.customer.customer.username }}</td>
+                          <td>
+                            {% for item in booking.items.all %}
+                                {{ item.item.product_name }} ({{ item.quantity }}) x ₹{{ item.price }}<br>
+                            {% endfor %}
+                          </td>
+                          <td>₹{{ booking.total_price }}</td>
+                          <td>{{ booking.service_type }}</td>
+                          <td>{{ booking.address }}</td>
+                          <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>
+                          <td>{{ booking.delivery_time|date:"M d, Y h:i A"|default:"-" }}</td>
+                          <td>{{ booking.payment_method}}</td>
+                          <td>
+                              <span class="badge {% if booking.payment.status == 'completed' %}bg-success{% elif booking.payment.status == 'pending' %}bg-warning{% elif booking.payment.status == 'failed' %}bg-danger{% else %}bg-info{% endif %}">
+                                  {{ booking.payment_status }}
+                              </span>
+                          </td>
+                          <td>
+                              <span class="badge {% if booking.status == 'Delivered' %}bg-success{% elif booking.status == 'Pending' %}bg-warning{% elif booking.status == 'Cancelled' %}bg-danger{% else %}bg-info{% endif %}">
+                                  {{ booking.status }}
+                              </span>
+                          </td>
+                          <td>
+                              <form method="POST" action="{% url 'vendor_dashboard' %}">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                  <select name="status" class="form-select" onchange="this.form.submit()">
+                                      <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                      <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                      <option value="Delivered" {% if booking.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                      <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                  </select>
+                              </form>
+                          </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="12" class="text-center">No bookings found.</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+      
+                  <!-- Service-Based Category Table -->
+                  {% elif user.category == "service_based"  %}
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Customer Name</th>
+                          <th>Service</th>
+                          <th>Service Type</th>
+                          <th>Date</th>
+                          <th>Time</th>
+                          <th>Customer Location</th>                        
+                          <th>Total Price</th>
+                          <th>Completed at</th>
+                          <th>Payment Status</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for booking in service_bookings %}
+                        <tr>
+                          <td>{{ booking.customer.customer.username }}</td>
+                          <td>{{ booking.service.service_name }}</td>
+                          <td>{{ booking.service_type|title }}</td>
+                          <td>{{ booking.service_date|date:"d M Y" }}</td>
+                          <td>{{ booking.service_time|time:"H:i" }}</td>
+                          <td>{{ booking.address }}</td>
+                         
+            
+                          <td>₹{{ booking.total_price }}</td>
+                          <td>{{ booking.complete_time }}</td>
+                          <td>
+                            {% if booking.payment_status == "pending" %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif booking.payment_status == "completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif booking.payment_status == "failed" %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% elif booking.payment_status == "refunded" %}
+                                <span class="badge bg-info">Refunded</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ booking.payment_status }}</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if booking.status == "Pending" %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% elif booking.status == "Confirmed" %}
+                            <span class="badge bg-success">Confirmed</span>
+                            {% elif booking.status == "Completed" %}
+                            <span class="badge bg-primary">Completed</span>
+                            {% elif booking.status == "Cancelled" %}
+                            <span class="badge bg-danger">Cancelled</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ booking.status }}</span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="7" class="text-center">No service bookings found.</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  {%elif user.category == "ride_service" %}
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Customer Name</th>
+                          <th>Service</th>
+                          <th>Service Type</th>
+                          <th>Date & Time</th>
+                          <th>Pick Up</th>
+                          <th>Drop Off</th>
+                          <th>Total Price</th>
+                          <th>Completed at</th>
+                          <th>Payment Status</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for booking in service_bookings %}
+                        <tr>
+                          <td>{{ booking.customer.customer.username }}</td>
+                          <td>{{ booking.service.service_name }}</td>
+                          <td>{{ booking.service_type|title }}</td>
+                          <td>{{ booking.service_date|date:"d M Y" }} & {{ booking.service_time|time:"H:i" }}</td>
+                          <td>{{ booking.pickup_location }}</td>
+                          <td>{{ booking.dropoff_location }}</td>            
+                          <td>₹{{ booking.total_price }}</td>
+                          <td>{{ booking.complete_time }}</td>
+                          <td>
+                            {% if booking.payment_status == "pending" %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif booking.payment_status == "completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif booking.payment_status == "failed" %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% elif booking.payment_status == "refunded" %}
+                                <span class="badge bg-info">Refunded</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ booking.payment_status }}</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if booking.status == "Pending" %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% elif booking.status == "Confirmed" %}
+                            <span class="badge bg-success">Confirmed</span>
+                            {% elif booking.status == "Completed" %}
+                            <span class="badge bg-primary">Completed</span>
+                            {% elif booking.status == "Cancelled" %}
+                            <span class="badge bg-danger">Cancelled</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ booking.status }}</span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="7" class="text-center">No service bookings found.</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  {% endif %}
+      
+                </div>
+              </div>
+            </div>
+          </div>
+      
+        </div>
+      </div>
+      
+          </div>
+        </div>
+
+          
+          </div>
+        </div>
+      
+   
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>   
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+  <script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="/media/assets1/js/dataTables.select.min.js"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/media/assets1/js/dashboard.js"></script>
+  <script src="/media/assets1/js/Chart.roundedBarCharts.js"></script>
+  <script>
+
+
+
+
+     
+
+</script>
+  
+  <!-- End custom js for this page-->
+</body>
+
+</html>
+
+
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">My Service Booking History</h4>
+
+           
+            </div>
+        </div>
+    </div>
+</div>
+

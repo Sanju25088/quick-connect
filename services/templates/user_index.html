@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title> Admin</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+
+<style>  /* Custom Modal Styling */
+  .modal-dialog {
+      max-width: 350px; /* Makes the modal smaller */
+  }
+
+  .modal-content {
+      border-radius: 12px; /* Rounded corners */
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+  }
+
+  .modal-header {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      padding: 12px 20px;
+  }
+
+  .modal-body {
+      font-size: 14px; /* Slightly smaller text */
+      padding: 15px;
+  }
+
+  .modal-footer {
+      padding: 10px;
+  }
+
+  .close {
+      font-size: 20px;
+  }</style>
+
+</head>
+<body>
+  
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group">
+              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item dropdown">
+            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+              <i class="icon-bell mx-0"></i>
+              <span class="count"></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+              <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+              <a class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-success">
+                    <i class="ti-info-alt mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-normal">Application Error</h6>
+                  <p class="font-weight-light small-text mb-0 text-muted">
+                    Just now
+                  </p>
+                </div>
+              </a>
+              <a class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-warning">
+                    <i class="ti-settings mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-normal">Settings</h6>
+                  <p class="font-weight-light small-text mb-0 text-muted">
+                    Private message
+                  </p>
+                </div>
+              </a>
+              <a class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-info">
+                    <i class="ti-user mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-normal">New user registration</h6>
+                  <p class="font-weight-light small-text mb-0 text-muted">
+                    2 days ago
+                  </p>
+                </div>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              <img src="{{ user.profile_image.url }}" alt="profile"/>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item d-flex flex-column">
+                
+                  <img src="{{ user.profile_image.url }}" alt="Profile Image"  style="width: 100px; height: 100px; border-radius: 70%;">
+                  <div class="mb-1"><strong>{{ user.username }}</strong></div>
+                  <div class="mb-1">Name: {{ user.first_name }}</div>
+                  <div class="mb-1">City: {{ user.last_name }}</div>
+                  <div class="mb-1">Role: {{ user.user_type }}</div>
+              </a>
+          
+              <div class="dropdown-divider"></div> <!-- Adds a separator -->
+          
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="ti-power-off text-primary me-2"></i> Logout
+              </a>
+          </div>
+          <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="ti-settings"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close ti-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      <div id="right-sidebar" class="settings-panel">
+        <i class="settings-close ti-close"></i>
+        <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
+          
+         
+        </ul>
+     
+      </div>
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'new_vendor' %}">
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Add Vendors</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+      
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'new_customer' %}">
+              <i class="icon-columns menu-icon"></i>
+              <span class="menu-title">Add Customer</span>
+              <i class="menu-arrow"></i>
+            </a>
+           
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'all_booking_history' %}">
+              <i class="icon-columns menu-icon"></i>
+              <span class="menu-title">Booking Histories</span>
+              <i class="menu-arrow"></i>
+            </a>
+           
+          </li>
+      
+          <li class="nav-item">
+            <a class="nav-link" href="#" >
+              <i class="icon-grid-2 menu-icon"></i>
+              <span class="menu-title">#</span>
+              <i class="menu-arrow"></i>
+            </a>
+            
+          </li>
+
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+                <div class="d-flex align-items-start justify-content-between">
+                    <h3 class="font-weight-bold" style="margin-top: -5px; margin-left: -5px;">Welcome {{ user.first_name }}</h3>
+                    <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="mdi mdi-calendar"></i> <span id="currentDate"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+     
+      
+
+        <!-- Other content below -->
+        
+        
+        <div class="row">
+          <!-- Weather & Location Section -->
+          <div class="col-lg-5 col-md-6 grid-margin stretch-card">
+            <div class="card tale-bg">
+              <div class="card-people mt-auto">
+                <img src="/media/assets1/images/dashboard/work-time-animate.svg" alt="people">
+                <div class="weather-info">
+                 
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <!-- Booking & Statistics Section -->
+          <div class="col-lg-7 col-md-6 grid-margin">
+            <div class="row">
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-tale d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Total Customers</p>
+                  <h5 class="mb-1">{{ total_customers }}</h5>
+                 
+                </div>
+              </div>
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-dark-blue d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Total Vendors</p>
+                  <h5 class="mb-1">{{ total_vendors }}</h5>
+                </div>
+              </div>
+            </div>
+        
+            <div class="row">
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-light-blue d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Total Bookings</p>
+                  <h5 class="mb-1">{{ total_bookings }}</h5>
+                </div>
+              </div>
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-light-blue d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Grocery Bookings</p>
+                  <h5 class="mb-1">{{ grocery_booking_count }}</h5>
+                </div>
+              </div>
+             
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-light-blue d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Service-Based Bookings</p>
+                  <h5 class="mb-1">{{ service_booking_count }}</h5>
+                </div>
+              </div>
+
+
+        
+
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-light-blue d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Transport Bookings</p>
+                  <h5 class="mb-1">{{ transport_booking_count }}</h5>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+             
+              <div class="col-6 mb-3 stretch-card">
+                <div class="card card-light-danger d-flex flex-column justify-content-between align-items-center p-3">
+                  <p class="mb-2 small">Customers Today</p>
+                  <h5 class="mb-1">{{ customers_registered_today }}</h5>                                 
+                </div>
+              </div>
+            </div>
+
+     
+          </div>
+        </div>
+        
+       
+        
+      <div class="row">
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Revenue Trend</h4>
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Service vs Product vs Transport Bookings</h4>
+              <canvas id="bookingTypeChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Booking Status Distribution</h4>
+              <canvas id="bookingStatusChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Top Performing Vendors</h4>
+              <canvas id="vendorPerformanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+   
+        <!-- partial -->
+      
+      <!-- main-panel ends -->
+      
+
+<!-- Bootstrap Modal -->
+
+
+
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+<!-- Plugins: JS -->
+<script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+<script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+<script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="/media/assets1/js/dataTables.select.min.js"></script>
+
+<!-- Core UI JS -->
+<script src="/media/assets1/js/off-canvas.js"></script>
+<script src="/media/assets1/js/hoverable-collapse.js"></script>
+<script src="/media/assets1/js/template.js"></script>
+<script src="/media/assets1/js/settings.js"></script>
+<script src="/media/assets1/js/todolist.js"></script>
+
+<!-- Custom JS for this page -->
+<script src="/media/assets1/js/dashboard.js"></script>
+<script src="/media/assets1/js/Chart.roundedBarCharts.js"></script>
+
+<!-- Show Alert Messages -->
+
+
+<!-- Display Current Date -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let today = new Date();
+    let formattedDate = today.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    });
+    let dateElement = document.getElementById("currentDate");
+    if (dateElement) {
+      dateElement.textContent = `Today (${formattedDate})`;
+    }
+  });
+  </script>
+{% if messages %}
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      var messageModal = document.getElementById('messageModal');
+      if (messageModal) {
+          var modal = new bootstrap.Modal(messageModal);
+          modal.show();
+      }
+  });
+</script>
+{% endif %}
+
+<!-- End custom js for this page-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Revenue Chart
+    var revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: JSON.parse('{{ revenue_dates|escapejs }}'),
+            datasets: [{
+                label: 'Daily Revenue',
+                data: JSON.parse('{{ revenue_data|escapejs }}'),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Booking Type Chart
+    var bookingTypeCtx = document.getElementById('bookingTypeChart').getContext('2d');
+    var bookingTypeChart = new Chart(bookingTypeCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Service Bookings', 'Product Bookings', 'Transport Bookings'],
+            datasets: [{
+                data: JSON.parse('{{ booking_type_data|escapejs }}'),
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(144, 238, 144)'
+                ]
+            }]
+        }
+    });
+
+    // Booking Status Chart
+    var bookingStatusCtx = document.getElementById('bookingStatusChart').getContext('2d');
+    var bookingStatusChart = new Chart(bookingStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: JSON.parse('{{ booking_status_labels|escapejs }}'),
+            datasets: [{
+                data: JSON.parse('{{ booking_status_data|escapejs }}'),
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)'
+                ]
+            }]
+        }
+    });
+
+    // Vendor Performance Chart
+    var vendorPerformanceCtx = document.getElementById('vendorPerformanceChart').getContext('2d');
+    var vendorPerformanceChart = new Chart(vendorPerformanceCtx, {
+        type: 'bar',
+        data: {
+            labels: JSON.parse('{{ vendor_names|escapejs }}'),
+            datasets: [{
+                label: 'Revenue',
+                data: JSON.parse('{{ vendor_revenue|escapejs }}'),
+                backgroundColor: 'rgb(75, 192, 192)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Connect - Services On Demand</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+
+    {% load static %}
+    <style>
+        :root {
+            --primary: #5B63FE;
+            --primary-light: #7B78FF;
+            --primary-dark: #4045C0;
+            --secondary: #FF7D54;
+            --secondary-light: #FFB199;
+            --secondary-dark: #E65635;
+            --dark: #252F40;
+            --dark-light: #344767;
+            --light: #F8F9FA;
+            --gray: #E9ECEF;
+            --gray-dark: #CED4DA;
+            --text: #4B5563;
+            --text-light: #6B7280;
+            --border: #DFE3E8;
+            --success: #00B856;
+            --info: #0099FF;
+            --warning: #FFB800;
+            --danger: #FF3B3B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.97);
+            padding: 20px 0;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 15px 0;
+            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 32px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .nav-links li {
+            margin-left: 20px;
+            position: relative;
+        }
+        
+        .nav-links a {
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 5px;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:not(.btn)::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:not(.btn):hover::after {
+            width: 100%;
+        }
+        
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dropdown-toggle::after {
+            content: '';
+            display: inline-block;
+            margin-left: 0.4em;
+            vertical-align: 0.1em;
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+            transition: transform 0.2s ease;
+        }
+        
+        .dropdown:hover .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            z-index: 100;
+            padding: 12px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            top: 100%;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: rgba(91, 99, 254, 0.07);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 6px 15px rgba(91, 99, 254, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 6px 15px rgba(91, 99, 254, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 120px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fafafa, #f5f7ff);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 1000px;
+            height: 1000px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.05) 0%, rgba(91, 99, 254, 0) 70%);
+            top: -400px;
+            right: -300px;
+            z-index: 0;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 125, 84, 0.05) 0%, rgba(255, 125, 84, 0) 70%);
+            bottom: -400px;
+            left: -200px;
+            z-index: 0;
+        }
+        
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            max-width: 550px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 125, 84, 0.15), rgba(255, 125, 84, 0.3));
+            color: var(--secondary-dark);
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 30px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 3px 10px rgba(255, 125, 84, 0.1);
+            transform: translateY(0);
+            animation: badgeFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes badgeFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 24px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--dark) 0%, var(--dark-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: right;
+            position: relative;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.1));
+        }
+        
+        .large-svg {
+            width: 100%;
+            max-width: 650px;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            animation: float 6s ease-in-out infinite;
+            transform-origin: center center;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(1deg); }
+            50% { transform: translateY(0px) rotate(0deg); }
+            75% { transform: translateY(15px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .features::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.07) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            top: 100px;
+            left: -150px;
+        }
+        
+        .features::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 125, 84, 0.05) 0%, rgba(255, 125, 84, 0) 70%);
+            border-radius: 50%;
+            bottom: 50px;
+            right: -200px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 70px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-header h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--dark) 0%, var(--dark-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-light) 100%);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+        }
+        
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            margin-top: 30px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card {
+            padding: 40px;
+            border-radius: 16px;
+            background-color: #fff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, rgba(91, 99, 254, 0.03), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon i {
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover .feature-icon i {
+            transform: scale(1.1);
+        }
+        
+        .icon-red {
+            background: linear-gradient(135deg, #FFE8E0, #FFDBCE);
+            color: var(--secondary);
+        }
+        
+        .icon-blue {
+            background: linear-gradient(135deg, #E0F7FF, #D0F0FF);
+            color: var(--info);
+        }
+        
+        .icon-green {
+            background: linear-gradient(135deg, #E0FFE8, #D0FFDC);
+            color: var(--success);
+        }
+        
+        .icon-yellow {
+            background: linear-gradient(135deg, #FFF8E0, #FFF2CC);
+            color: var(--warning);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .feature-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 3px;
+        }
+        
+        .feature-card p {
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        
+        /* Workflow Section */
+        .workflow {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f5f7ff, #fafafa);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.05) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+        }
+        
+        .workflow-demo {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .workflow-demo::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 125, 84, 0.05) 0%, rgba(255, 125, 84, 0) 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            z-index: -1;
+        }
+        
+        .workflow-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .workflow-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--text);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .workflow-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .workflow-tab:hover {
+            color: var(--primary-light);
+        }
+        
+        .workflow-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .workflow-sidebar {
+            border-right: 1px solid var(--border);
+            padding-right: 30px;
+        }
+        
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-item {
+            padding: 15px 0;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+            color: var(--text);
+            font-weight: 500;
+            position: relative;
+            padding-left: 12px;
+        }
+        
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 0;
+            background-color: var(--primary);
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 4px;
+            transition: height 0.3s;
+        }
+        
+        .sidebar-item:hover, .sidebar-item.active {
+            color: var(--primary);
+            padding-left: 18px;
+        }
+        
+        .sidebar-item:hover::before, .sidebar-item.active::before {
+            height: 70%;
+        }
+        
+        .workflow-main {
+            padding-left: 15px;
+        }
+        
+        .workflow-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        
+        .workflow-table th, .workflow-table td {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .workflow-table th {
+            font-weight: 600;
+            color: var(--dark);
+            background-color: rgba(245, 247, 255, 0.7);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .workflow-table th:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .workflow-table th:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .workflow-table tbody tr {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .workflow-table tbody tr:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            background-color: rgba(245, 247, 255, 0.4);
+        }
+        
+        .workflow-table td {
+            background-color: white;
+        }
+        
+        .workflow-table td:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .workflow-table td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        /* How It Works Section */
+        .operations {
+            padding: 100px 0;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .operations::before {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.05) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            top: 50px;
+            left: -150px;
+        }
+        
+        .operations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .operation-card {
+            padding: 40px 30px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .operation-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, rgba(91, 99, 254, 0.03), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .operation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .operation-card:hover::before {
+            opacity: 1;
+        }
+        
+        .operation-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(245, 247, 255, 0.7);
+            border-radius: 50%;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .operation-card:hover .operation-icon {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .operation-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        
+        .operation-card p {
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #fafafa, #f5f7ff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .services::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.05) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            top: -200px;
+            left: -100px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            transition: all 0.4s ease;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .service-card:hover .service-image img {
+            transform: scale(1.1);
+        }
+        
+        .service-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .service-card:hover .service-overlay {
+            opacity: 1;
+        }
+        
+        .service-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .service-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .service-card:hover h3::after {
+            width: 60px;
+        }
+        
+        .service-card p {
+            color: var(--text);
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+        
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .service-provider-count {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .service-action {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .service-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(91, 99, 254, 0.25);
+        }
+        
+        /* FAQ Section */
+        .faq {
+            padding: 100px 0;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .faq::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.05) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            bottom: -200px;
+            right: -200px;
+        }
+        
+        .faq-list {
+            max-width: 800px;
+            margin: 50px auto 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+        }
+        
+        .faq-item.open {
+            border-color: rgba(91, 99, 254, 0.2);
+            box-shadow: 0 12px 30px rgba(91, 99, 254, 0.1);
+        }
+        
+        .faq-question {
+            padding: 22px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.open .faq-question {
+            color: var(--primary);
+        }
+        
+        .faq-question i {
+            transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            color: var(--text-light);
+        }
+        
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+        
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+        
+        .faq-item.open .faq-answer {
+            padding: 0 25px 25px;
+            max-height: 1000px;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -300px;
+            right: -100px;
+        }
+        
+        .cta::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            bottom: -200px;
+            left: -100px;
+        }
+        
+        .cta-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-content {
+            max-width: 600px;
+        }
+        
+        .cta h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .cta h2::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background: white;
+            bottom: -15px;
+            left: 0;
+            border-radius: 4px;
+        }
+        
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-white:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline-white {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-outline-white:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .cta-image {
+            max-width: 40%;
+        }
+        
+        .cta-image img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 30px;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(91, 99, 254, 0.03) 0%, rgba(91, 99, 254, 0) 70%);
+            border-radius: 50%;
+            top: -200px;
+            left: -200px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-column {
+            padding-right: 20px;
+        }
+        
+        .footer-logo {
+            margin-bottom: 25px;
+        }
+        
+        .footer-logo img {
+            height: 34px;
+            filter: brightness(0.95);
+            transition: filter 0.3s ease;
+        }
+        
+        .footer-logo img:hover {
+            filter: brightness(1.1);
+        }
+        
+        .footer-column p {
+            color: var(--text);
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(245, 247, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(91, 99, 254, 0.2);
+        }
+        
+        .footer-column h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--dark);
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-light) 100%);
+            bottom: 0;
+            left: 0;
+            border-radius: 3px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .footer-links a {
+            color: var(--text);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 0;
+            display: inline-block;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 8px;
+        }
+        
+        .footer-bottom {
+            margin-top: 70px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: var(--text);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-bottom-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .footer-bottom-links a {
+            color: var(--text);
+            transition: color 0.3s;
+        }
+        
+        .footer-bottom-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .animated {
+            animation-duration: 0.8s;
+            animation-fill-mode: both;
+        }
+        
+        .fadeInUp {
+            animation-name: fadeInUp;
+        }
+        
+        .fadeIn {
+            animation-name: fadeIn;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                margin-bottom: 40px;
+                max-width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .features-grid, 
+            .operations-grid, 
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .workflow-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding-right: 0;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .sidebar-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .sidebar-item {
+                border: 1px solid var(--border);
+                padding: 10px 15px;
+                border-radius: 8px;
+                margin-bottom: 0;
+            }
+            
+            .cta-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cta-content {
+                margin-bottom: 40px;
+                max-width: 100%;
+            }
+            
+            .cta h2::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .cta-buttons {
+                justify-content: center;
+            }
+            
+            .cta-image {
+                max-width: 80%;
+                margin: 0 auto;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 50px 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .nav-links li {
+                margin: 5px;
+            }
+            
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            
+            .features-grid, 
+            .operations-grid, 
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-table {
+                overflow-x: auto;
+                display: block;
+            }
+            
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .footer-bottom-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        #loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+    overflow: hidden;
+}
+
+.side-bg {
+    position: absolute;
+    top: 0;
+    width: 30%;
+    height: 70%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.7; /* Optional: adjust for transparency */
+}
+
+.left-bg {
+    left: 0;
+}
+
+.right-bg {
+    right: 0;
+}
+
+.loading-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* Optional: a soft white background */
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.loading-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #007bff;
+    transition: width 0.4s ease;
+}
+
+.progress-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+        
+        .progress-container {
+            width: 300px;
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px auto;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #5B63FE;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <!-- Left Full-Height Image -->
+    
+        <!-- Right Full-Height Image -->
+    
+        <!-- Center Loading Content -->
+        <div class="loading-content">
+            <img src="/media/assets1/images/qc3.png" alt="Quick Connect Logo" class="loading-logo">
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div class="progress-text">Loading... <span id="progress-percent">0</span>%</div>
+        </div>
+    </div>
+    
+    
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="/media/assets1/images/qc3.png" alt="Quick Connect Logo">
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+            
+                    <li><a href="{% url 'pages_login' %}" class="btn btn-outline">Login</a></li>
+            
+                    
+                    <li class="dropdown">
+                        <a href="#" class="btn btn-primary dropdown-toggle">Sign Up</a>
+                        <div class="dropdown-menu">
+                            <a href="{% url 'customer_register' %}">As Customer</a>
+                            <a href="{% url 'vendor_register' %}">As Service Provider</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="badge">Location-Based Services</span>
+                <h1>Connect With Local Service Providers</h1>
+                <p>Quick Connect  brings customers and service providers together on a single platform. Find nearby services, book appointments, and get service delivered right to your location.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'customer_register' %}" class="btn btn-primary">Join as Customer</a>
+                    <a href="{% url 'vendor_register' %}" class="btn btn-outline">Become a Service Provider</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="/media/assets1/images/ecommerce-web-page-animate.svg" alt="Quick Connect Services" class="large-svg">
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="clients">
+        <div class="container">
+            <h3>Connecting thousands of service providers with customers</h3>
+            <div class="client-logos">
+                <div class="client-logo">
+                    <i class="fas fa-home fa-2x"></i>
+                </div>
+                <div class="client-logo">
+                    <i class="fas fa-tools fa-2x"></i>
+                </div>
+                <div class="client-logo">
+                    <i class="fas fa-car fa-2x"></i>
+                </div>
+                <div class="client-logo">
+                    <i class="fas fa-utensils fa-2x"></i>
+                </div>
+                <div class="client-logo">
+                    <i class="fas fa-heartbeat fa-2x"></i>
+                </div>
+                <div class="client-logo">
+                    <i class="fas fa-graduation-cap fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Quick Connect</a>
+                </h2>
+                <p>Our platform offers seamless connections between customers and service providers with smart location-based matching and efficient booking management.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon icon-red">
+                        <i class="fas fa-map-marker-alt fa-2x"></i>
+                    </div>
+                    <h3>Automatic Location Detection</h3>
+                    <p>Our platform automatically detects your location to connect you with nearby service providers within a 20km radius. No need to manually enter your coordinates.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <h3>Easy Service Booking</h3>
+                    <p>Book appointments with just a few clicks. Track your service status in real-time and receive notifications about your upcoming bookings.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">
+                        <i class="fas fa-star fa-2x"></i>
+                    </div>
+                    <h3>Verified Service Providers</h3>
+                    <p>Choose from a network of verified service providers with genuine customer reviews. Make informed decisions based on ratings and feedback.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-yellow">
+                        <i class="fas fa-route fa-2x"></i>
+                    </div>
+                    <h3>Distance Tracking</h3>
+                    <p>See exactly how far service providers are from your location. Plan accordingly and choose providers within your preferred distance range.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section class="workflow" id="workflow">
+        <div class="container">
+            <div class="section-header">
+                <h2>Service Provider Dashboard</h2>
+                <p>Powerful tools to help service providers manage bookings, track customer requests, and grow their business</p>
+            </div>
+            <div class="workflow-demo">
+                <div class="workflow-tabs">
+                    <div class="workflow-tab active">Bookings</div>
+                    <div class="workflow-tab">Customer Reviews</div>
+                    <div class="workflow-tab">Service Analytics</div>
+                    <div class="workflow-tab">Profile Settings</div>
+                </div>
+                <div class="workflow-content">
+                    <div class="workflow-sidebar">
+                        <div class="sidebar-menu">
+                            <div class="sidebar-item active">Upcoming Bookings</div>
+                            <div class="sidebar-item">Booking History</div>
+                            <div class="sidebar-item">Customer Requests</div>
+                            <div class="sidebar-item">Service Notifications</div>
+                        </div>
+                    </div>
+                    <div class="workflow-main">
+                        <table class="workflow-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Service</th>
+                                    <th>Date / Time</th>
+                                    <th>Status</th>
+                                    <th>Distance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12345</td>
+                                    <td>John Doe</td>
+                                    <td>Plumbing Service</td>
+                                    <td>Apr 12, 2025</td>
+                                    <td>Confirmed</td>
+                                    <td>4.2 km</td>
+                                </tr>
+                                <tr>
+                                    <td>#12346</td>
+                                    <td>Jane Smith</td>
+                                    <td>Electrical Repair</td>
+                                    <td>Apr 13, 2025</td>
+                                    <td>Pending</td>
+                                    <td>8.7 km</td>
+                                </tr>
+                                <tr>
+                                    <td>#12347</td>
+                                    <td>Mike Johnson</td>
+                                    <td>Home Cleaning</td>
+                                    <td>Apr 15, 2025</td>
+                                    <td>Completed</td>
+                                    <td>2.3 km</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="operations" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How Quick Connect  Works</h2>
+                <p>A seamless experience from finding services to booking and receiving service at your location</p>
+            </div>
+            <div class="operations-grid">
+                <div class="operation-card">
+                    <div class="operation-icon">
+                        <i class="fas fa-location-arrow fa-3x" style="color: var(--primary);"></i>
+                    </div>
+                    <h3>1. Detect Your Location</h3>
+                    <p>Our system automatically detects your current location when you visit the platform, making it easy to find nearby service providers.</p>
+                </div>
+                <div class="operation-card">
+                    <div class="operation-icon">
+                        <i class="fas fa-search-location fa-3x" style="color: var(--secondary);"></i>
+                    </div>
+                    <h3>2. Browse Nearby Providers</h3>
+                    <p>View a list of service providers within a 20km radius of your location, complete with distance information, ratings, and service details.</p>
+                </div>
+                <div class="operation-card">
+                    <div class="operation-icon">
+                        <i class="fas fa-calendar-check fa-3x" style="color: var(--primary);"></i>
+                    </div>
+                    <h3>3. Book & Receive Service</h3>
+                    <p>Book your service with just a few clicks, receive confirmation, and get the service delivered right to your location.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{% url 'customer_register' %}" class="btn btn-primary">Get Started Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services" style="background-color: var(--light);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Services Available on Quick Connect</h2>
+                <p>Find a wide range of professional services from verified local providers</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="Home Repair">
+                    </div>
+                    <div class="service-content">
+                        <h3>Home Repair</h3>
+                        <p>Professional repair services for plumbing, electrical, appliances, and general home maintenance needs.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>100+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="Cleaning Services">
+                    </div>
+                    <div class="service-content">
+                        <h3>Cleaning Services</h3>
+                        <p>House cleaning, carpet cleaning, and specialized cleaning services for homes and businesses.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>50+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="Food Delivery">
+                    </div>
+                    <div class="service-content">
+                        <h3>Food Delivery</h3>
+                        <p>Connect with local food delivery services, catering, and meal preparation within your area.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>200+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="IT & Tech Support">
+                    </div>
+                    <div class="service-content">
+                        <h3>IT & Tech Support</h3>
+                        <p>Technical support, computer repair, network setup, and other IT services delivered to your location.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>100+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="Delivery & Moving">
+                    </div>
+                    <div class="service-content">
+                        <h3>Delivery & Moving</h3>
+                        <p>Local delivery services, moving assistance, furniture assembly, and transport services.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>50+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="/api/placeholder/400/200" alt="Home Improvement">
+                    </div>
+                    <div class="service-content">
+                        <h3>Home Improvement</h3>
+                        <p>Painting, carpentry, renovation, and interior design services from skilled professionals.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-provider-count">
+                            <i class="fas fa-users"></i>
+                            <span>100+</span>
+                        </div>
+                        <a href="#" class="service-action">
+                            <i class="fas fa-angle-right"></i>
+                            <span>View Providers</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Section -->
+    <section class="integrations">
+        <div class="container">
+            <div class="section-header">
+                <h2>Integrations</h2>
+                <p>Quick Connect  integrates with popular platforms to streamline your workflow</p>
+            </div>
+            <div class="integration-logos">
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="Google Maps">
+                </div>
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="Stripe">
+                </div>
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="Facebook">
+                </div>
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="Instagram">
+                </div>
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="Twitter">
+                </div>
+                <div class="integration-logo">
+                    <img src="/api/placeholder/60/60" alt="LinkedIn">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Pricing</h2>
+                <p>Affordable pricing plans for customers and service providers</p>
+            </div>
+            <div class="pricing-toggle">
+                <div class="toggle-option active">Monthly</div>
+                <div class="toggle-option">Yearly</div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$9.99 <span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Up to 10 bookings</li>
+                        <li>Basic customer support</li>
+                        <li>Limited analytics</li>
+                    </ul>
+                </div>
+                <div class="pricing-card popular">
+                    <h3>Premium</h3>
+                    <div class="price">$19.99 <span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Up to 50 bookings</li>
+                        <li>Prioritized customer support</li>
+                        <li>Advanced analytics</li>
+                    </ul>
+                    <div class="popular-badge">Most Popular</div>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$49.99 <span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Unlimited bookings</li>
+                        <li>Dedicated customer support</li>
+                        <li>Custom analytics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Get answers to common questions about Quick Connect </p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-plus"></i>
+                        What is Quick Connect ?
+                    </div>
+                    <div class="faq-answer">
+                        Quick Connect  is a platform that connects customers with local service providers. We offer a wide range of services, including home repair, cleaning, food delivery, and more.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-plus"></i>
+                        How do I book a service?
+                    </div>
+                    <div class="faq-answer">
+                        To book a service, simply browse our list of available services, select the one you need, and follow the prompts to complete your booking.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="fas fa-plus"></i>
+                        What is the cancellation policy?
+                    </div>
+                    <div class="faq-answer">
+                        Our cancellation policy varies depending on the service provider. Please check with your provider for their specific cancellation policy.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container cta-container">
+            <div class="cta-content">
+                <h2>Get Started with Quick Connect  Today!</h2>
+                <p>Join our community of customers and service providers to experience the power of seamless connections.</p>
+            </div>
+            <div class="cta-image">
+                <img src="/media/assets1/images/qc1.png" alt="Quick Connect ">
+            </div>
+            <div class="cta-stats">
+                <div class="stat">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Customers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Service Providers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100,000+</div>
+                    <div class="stat-label">Bookings</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{% url 'customer_register' %}" class="btn btn-white">Sign Up as Customer</a>
+                <a href="{% url 'vendor_register' %}" class="btn btn-white">Sign Up as Service Provider</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="/media/assets1/images/qc3.png" alt="Quick Connect Logo">
+                    </div>
+                    <p>Quick Connect  is a platform that connects customers with local service providers.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Social Media</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Quick Connect . All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Loading screen
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get loading screen elements
+            const loadingScreen = document.getElementById('loading-screen');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            
+            // Start at 0
+            let progress = 0;
+            progressBar.style.width = '0%';
+            
+            // Simulate loading progress
+            const interval = setInterval(function() {
+                // Increment progress by a small amount each time
+                progress += 2;
+                
+                // Update the progress bar and text
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = progress;
+                
+                // When loading is complete
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Hide loading screen
+                    setTimeout(function() {
+                        loadingScreen.style.opacity = '0';
+                        
+                        // Make it non-interactive after fade
+                        setTimeout(function() {
+                            loadingScreen.style.display = 'none';
+                        }, 800);
+                    }, 500);
+                }
+            }, 50);
+        });
+
+        // FAQ Accordion
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    const isOpen = item.classList.contains('open');
+                    
+                    // Close all items
+                    faqItems.forEach(faq => {
+                        faq.classList.remove('open');
+                    });
+                    
+                    // Open the clicked item if it wasn't already open
+                    if (!isOpen) {
+                        item.classList.add('open');
+                    }
+                });
+            });
+        });
+
+        // Workflow Tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.workflow-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                });
+            });
+        });
+
+        // Sidebar Items
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active class from all items
+                    sidebarItems.forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    item.classList.add('active');
+                });
+            });
+        });
+
+        // Pricing Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            
+            toggleOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove active class from all options
+                    toggleOptions.forEach(o => {
+                        o.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked option
+                    option.classList.add('active');
+                });
+            });
+        });
+
+        // Dynamic Date in Footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSpan = document.querySelector('.current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>

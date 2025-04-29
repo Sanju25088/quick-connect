@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Vendor Register</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      font-family: 'Times New Roman', sans-serif;
+    }
+
+    .auth-form-light {
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 50px;
+      border: 1px solid #dee2e6;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      padding: 14px;
+      font-size: 16px;
+      transition: 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #0056b3, #003f8a);
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .auth-form-light h4 {
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo img {
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .small a {
+      color: #007bff;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .small a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <div class="content-wrapper d-flex align-items-center auth px-0">
+      <div class="w-100">
+        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+          <div class="brand-logo">
+            <img src="/media/assets1/images/qc3.png" alt="logo">
+          </div>
+
+          <h4>Create Your Vendor Account</h4>
+
+          <form method="POST" action="{% url 'vendor_register' %}" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+            {% csrf_token %}
+
+            <label>📂 Category:</label>
+            <select name="category" class="form-control" id="category-select" onchange="updateCategoryType()">
+                <option value="grocery">🧺 Grocery</option>
+                <option value="service_based">🔧 Service-Based</option>
+                <option value="ride_service">🚖 Ride Service (Cabs, Autos)</option>
+
+            </select><br><br>
+
+            <div class="col-12">
+              <label class="form-label">👤 Username</label>
+              <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">👤  First Name</label>
+              <input type="text" name="first_name" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">👤  Last Name</label>
+              <input type="text" name="last_name" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">📧 Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">🔑 Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">🔑 Confirm Password</label>
+              <input type="password" name="confirm_password" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">📷 Profile Picture</label>
+              <input type="file" name="image" class="form-control" required>
+            </div>
+            <br>
+            <div class="col-12">
+              <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">Create Vendor Account</button>
+            </div>
+
+            <div class="col-12 text-center mt-3">
+              <p class="small mb-0">Already have an account? <a href="{% url 'pages_login' %}">Log in</a></p>
+            </div>
+          </form>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Function to show alert messages
+    function showAlert(message, type) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.textContent = message;
+      
+      const form = document.querySelector('form');
+      form.insertBefore(alertDiv, form.firstChild);
+      
+      // Remove alert after 5 seconds
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    // Add client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+      const email = document.querySelector('input[name="email"]').value;
+
+      // Password validation
+      if (password.length < 8) {
+        e.preventDefault();
+        showAlert('Password must be at least 8 characters long!', 'danger');
+        return;
+      }
+
+      if (!/[A-Z]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one uppercase letter (A-Z)!', 'danger');
+        return;
+      }
+
+      if (!/[a-z]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one lowercase letter (a-z)!', 'danger');
+        return;
+      }
+
+      if (!/[0-9]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one number (0-9)!', 'danger');
+        return;
+      }
+
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)!', 'danger');
+        return;
+      }
+
+      // Password match validation
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        showAlert('Passwords do not match! Please make sure both passwords are identical.', 'danger');
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        e.preventDefault();
+        showAlert('Invalid email format! Please enter a valid email address (e.g., example@domain.com)', 'danger');
+        return;
+      }
+
+      // Phone number validation (if provided)
+      if (phoneNumber && !/^\+?1?\d{9,15}$/.test(phoneNumber)) {
+        e.preventDefault();
+        showAlert('Invalid phone number format! Please enter a valid phone number (e.g., +1234567890 or 1234567890)', 'danger');
+        return;
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+

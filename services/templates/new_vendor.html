@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Add New Vendor</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  <style>
+       body {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      font-family: 'Times New Roman', sans-serif;
+    }
+
+    .auth-form-light {
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 50px;
+      border: 1px solid #dee2e6;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      padding: 14px;
+      font-size: 16px;
+      transition: 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #0056b3, #003f8a);
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .auth-form-light h4 {
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo img {
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .small a {
+      color: #007bff;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .small a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <!-- partial:/media/assets1/partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="icon-menu"></span>
+          </button>
+       
+          <ul class="navbar-nav  navbar-nav-right">
+            <h3 class="text-primary align-self-center font-weight-bold">Add New Vendors</h3>
+        </ul>
+        
+
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              <img src="{{ user.profile_image.url }}" alt="profile"/>
+            </a>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% if user.user_type == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'vendor_dashboard' %}{% endif %}" >
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Back to Dashboard</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <form method="POST" action="{% url 'new_vendor' %}" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <label>📂 Category:</label>
+                    <select name="category" class="form-control" id="category-select" onchange="updateCategoryType()">
+                        <option value="grocery">🧺 Grocery</option>
+                        <option value="service_based">🔧 Service-Based</option>
+                        <option value="ride_service">🚖 Ride Service (Cabs, Autos)</option>
+        
+                    </select><br><br>
+        
+        
+                    <div class="col-12">
+                      <label class="form-label">👤 Username</label>
+                      <input type="text" name="username" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">👤  First Name</label>
+                      <input type="text" name="first_name" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">👤  Last Name</label>
+                      <input type="text" name="last_name" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">📧 Email</label>
+                      <input type="email" name="email" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">🔑 Password</label>
+                      <input type="password" name="password" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">🔑 Confirm Password</label>
+                      <input type="password" name="confirm_password" class="form-control" required>
+                    </div>
+        
+                    <div class="col-12">
+                      <label class="form-label">📷 Profile Picture</label>
+                      <input type="file" name="image" class="form-control" required>
+                    </div>
+                    <br>
+                    <div class="col-12">
+                      <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">Create Vendor Account</button>
+                    </div>
+        
+                    <div class="col-12 text-center mt-3">
+                      <p class="small mb-0">Already have an account? <a href="{% url 'pages_login' %}">Log in</a></p>
+                    </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+ 
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <script>
+    // Function to show alert messages
+    function showAlert(message, type) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.textContent = message;
+      
+      const form = document.querySelector('form');
+      form.insertBefore(alertDiv, form.firstChild);
+      
+      // Remove alert after 5 seconds
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    // Add client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+      const email = document.querySelector('input[name="email"]').value;
+
+      // Password validation
+      if (password.length < 8) {
+        e.preventDefault();
+        showAlert('Password must be at least 8 characters long!', 'danger');
+        return;
+      }
+
+      if (!/[A-Z]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one uppercase letter (A-Z)!', 'danger');
+        return;
+      }
+
+      if (!/[a-z]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one lowercase letter (a-z)!', 'danger');
+        return;
+      }
+
+      if (!/[0-9]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one number (0-9)!', 'danger');
+        return;
+      }
+
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        e.preventDefault();
+        showAlert('Password must contain at least one special character (!@#$%^&*(),.?":{}|<>)!', 'danger');
+        return;
+      }
+
+      // Password match validation
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        showAlert('Passwords do not match! Please make sure both passwords are identical.', 'danger');
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        e.preventDefault();
+        showAlert('Invalid email format! Please enter a valid email address (e.g., example@domain.com)', 'danger');
+        return;
+      }
+
+      // Phone number validation (if provided)
+    
+    });
+  </script>
+</body>
+</html>

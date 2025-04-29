@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Skydash Admin</title>
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      font-family: 'Times New Roman', sans-serif;
+    }
+    
+    .auth-form-light {
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      background: white;
+      padding: 40px;
+      border: 2px solid #dee2e6;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid #ced4da;
+      padding: 14px;
+      font-size: 16px;
+      transition: border-color 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #0056b3, #003f8a);
+      transform: scale(1.05);
+    }
+
+    .location-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .get-location-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .get-location-btn:hover {
+      background: #218838;
+      transform: scale(1.05);
+    }
+
+    .error-text {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-5 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo text-center">
+                <img src="/media/assets1/images/qc3.png" alt="logo">
+              </div>
+
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <label for="phone_no">📞 Contact Number:</label>
+                <input type="text" name="phone_no" class="form-control mb-3" value="{{ customer_info.contact_no }}" required>
+
+                <label for="permanent_address">🏠 Permanent Address:</label>
+                <textarea name="permanent_address" class="form-control mb-3" required>{{ customer_info.permanent_address }}</textarea>
+
+                <label>📍 Current Location (Latitude, Longitude):</label>
+                <div class="location-container mb-3">
+                  <input type="text" id="latitude" class="form-control" name="latitude" value="{{ customer_info.latitude }}" readonly required>
+                  <input type="text" id="longitude" class="form-control" name="longitude" value="{{ customer_info.longitude }}" readonly required>
+                  <button type="button" class="get-location-btn" onclick="getLocation()">📌 Get Location</button>
+                </div>
+                <p id="location-error" class="error-text"></p>
+
+                <label>📌 Location Name:</label>
+                <input type="text" id="location_name" class="form-control mb-4" name="location_name" value="{{ customer_info.location_name }}" readonly required>
+
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            document.getElementById("latitude").value = lat;
+            document.getElementById("longitude").value = lon;
+            document.getElementById("location-error").innerText = "";
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+              .then(response => response.json())
+              .then(data => {
+                document.getElementById("location_name").value = data.display_name || "Location not found";
+              })
+              .catch(() => {
+                document.getElementById("location_name").value = "Error fetching location";
+              });
+          },
+          function (error) {
+            let errorMessage = "Error getting location. Please enable location services.";
+            if (error.code === error.PERMISSION_DENIED) {
+              errorMessage = "Location access denied. Enable location services in browser settings.";
+            }
+            document.getElementById("location-error").innerText = errorMessage;
+          }
+        );
+      } else {
+        document.getElementById("location-error").innerText = "Geolocation is not supported by this browser.";
+      }
+    }
+  </script>
+</body>
+
+</html>

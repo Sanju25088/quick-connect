@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Reviews</title>
+
+  <link href="/media/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container mt-5">
+
+    <h2 class="mb-4 text-center">Customer Reviews</h2>
+
+    {% if reviews %}
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Review ID</th>
+            <th>Customer</th>
+            <th>Rating</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for review in reviews %}
+            <tr>
+              <td>{{ review.id }}</td>
+              <td>{{ review.customer.username }}</td>
+              <td>{{ review.rating }} ⭐</td>
+              <td>{{ review.review_text }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-center">No reviews available.</p>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <a href="{% url 'vendor_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+  </div>
+
+  <script src="/media/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

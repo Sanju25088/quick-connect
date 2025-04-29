@@ -1,0 +1,50 @@
+<!-- Add these hidden input fields in the form -->
+<input type="hidden" name="pickup_latitude" id="pickup_latitude">
+<input type="hidden" name="pickup_longitude" id="pickup_longitude">
+<input type="hidden" name="dropoff_latitude" id="dropoff_latitude">
+<input type="hidden" name="dropoff_longitude" id="dropoff_longitude">
+
+<!-- Update the JavaScript to set the hidden fields -->
+<script>
+    // ... existing map initialization code ...
+
+    function setupLocationSearch(inputId, markerVar, coordsId, latFieldId, lngFieldId) {
+        var input = document.getElementById(inputId);
+        var coordsDiv = document.getElementById(coordsId);
+        var latField = document.getElementById(latFieldId);
+        var lngField = document.getElementById(lngFieldId);
+
+        input.addEventListener('change', function() {
+            geocoder.geocode(input.value, function(results) {
+                if (results && results.length > 0) {
+                    var result = results[0];
+                    var latlng = result.center;
+                    
+                    // Update coordinates display
+                    coordsDiv.textContent = `Lat: ${latlng.lat.toFixed(6)}, Lng: ${latlng.lng.toFixed(6)}`;
+                    
+                    // Update hidden fields
+                    latField.value = latlng.lat;
+                    lngField.value = latlng.lng;
+                    
+                    // Update or create marker
+                    if (markerVar) {
+                        markerVar.setLatLng(latlng);
+                    } else {
+                        markerVar = L.marker(latlng).addTo(map);
+                    }
+                    
+                    // Center map on the location
+                    map.setView(latlng, 13);
+                    
+                    // Calculate distance if both locations are set
+                    calculateDistance();
+                }
+            });
+        });
+    }
+
+    // Setup search for both locations with coordinate fields
+    setupLocationSearch('pickup-search', pickupMarker, 'pickup-coords', 'pickup_latitude', 'pickup_longitude');
+    setupLocationSearch('dropoff-search', dropoffMarker, 'dropoff-coords', 'dropoff_latitude', 'dropoff_longitude');
+</script> 

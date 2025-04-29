@@ -1,0 +1,3461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Customer Dash</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<style>
+body {
+    position: relative;
+    overflow-x: hidden;
+    background-color: #f9fafb;
+    background-image: url( 'assets1/images/Groceries-cuate.svg' );
+    background-repeat: no-repeat;
+    background-size: cover; /* or 'contain' or specific sizes like '100% 100%' */
+    background-position: center; /* or 'top', 'bottom', etc. */
+}
+
+  /* SVG Background Elements */
+  .bg-wave {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: -1;
+      pointer-events: none;
+  }
+  
+  .bg-dots {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: auto;
+      z-index: -1;
+      opacity: 0.7;
+      pointer-events: none;
+  }
+  
+  .bg-blob {
+      position: fixed;
+      top: 20%;
+      left: -150px;
+      width: 600px;
+      height: auto;
+      z-index: -1;
+      pointer-events: none;
+  }
+  
+  .bg-circles {
+      position: fixed;
+      bottom: 10%;
+      right: 5%;
+      width: 80%;
+      height: auto;
+      z-index: -1;
+      opacity: 0.7;
+      pointer-events: none;
+  }
+  
+  /* Card enhancements */
+  .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border: none;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+  }
+  
+  .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card .card-title {
+      font-weight: 600;
+      color: #252F40;
+  }
+  
+
+  
+
+  
+  .my-details {
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      color: #5B63FE; /* Changed to primary color from landing page */
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+  }
+
+  .my-details:hover {
+      color: white;
+      background-color: #5B63FE;
+  }
+
+  /* Enhanced Search Bar */
+  .search-container {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .search-form {
+    display: flex;
+    width: 100%;
+  }
+
+  #navbar-search-input {
+    padding-right: 40px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 1px solid #e4e9f0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  
+  #navbar-search-input:focus {
+    border-color: #5B63FE;
+    box-shadow: 0 0 0 0.2rem rgba(91, 99, 254, 0.25);
+  }
+
+  #navbar-search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+  }
+
+  #navbar-search-icon .input-group-text {
+    border: none;
+    background: transparent;
+  }
+
+  /* Enhanced Notification UI */
+  .notification-dropdown {
+    max-height: 400px;
+    overflow-y: auto;
+    width: 320px;
+    padding: 0;
+  }
+
+  .notification-dropdown .dropdown-header {
+    background-color: #c4b9c7;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    border-radius: 5px 5px 0 0;
+  }
+
+  .notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s;
+  }
+
+  .notification-item:hover {
+    background-color: #f8f9ff;
+  }
+  
+  .notification-item.unread {
+    background-color: rgba(91, 99, 254, 0.05);
+    border-left: 3px solid #5B63FE;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+  }
+
+  .notification-content h6 {
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .notification-time {
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .view-all-link {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8f9ff;
+    color: #5B63FE;
+    font-weight: 600;
+    transition: all 0.3s;
+    border-radius: 0 0 5px 5px;
+  }
+
+  .view-all-link:hover {
+    background-color: #5B63FE;
+    color: white;
+    text-decoration: none;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 6px;
+    border-radius: 50%;
+    background-color: #FF5757;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  /* Ensuring dropdown menu is scrollable */
+  .dropdown-menu {
+      max-height: 300px; /* Restrict height */
+      overflow-y: auto;  /* Enable vertical scrolling */
+      width: 450px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Customer details section with enforced scrollability */
+  .customer-info {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 5px;
+      max-height: 150px; /* Ensure scrollability */
+      overflow-y: auto;
+  }
+
+  /* Star rating design */
+  .star-rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: start;
+      font-size: 2rem;
+      margin-bottom: -10px; /* Reduce space below stars */
+  }
+
+  .star-rating input {
+      display: none;
+  }
+
+  .star-rating label {
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-right: 5px; /* Reduce spacing between stars */
+  }
+
+  .star-rating input:checked ~ label {
+      color: gold;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+      color: gold;
+  }
+
+  /* Toggle Button */
+  .toggle-info-btn {
+      display: block;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #FFB800, #FFA000);
+      padding: 8px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(255, 184, 0, 0.3);
+  }
+  
+  .toggle-info-btn:hover {
+      background: linear-gradient(135deg, #FFA000, #FF8F00);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 184, 0, 0.4);
+  }
+
+  .toggle-info-btn:hover {
+      background: #d4a000;
+      text-decoration: none;
+  }
+
+  /* Location text formatting */
+  .location-text {
+      display: block;
+      max-width: 300px; /* Adjust as needed */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap; /* Preserves line breaks */
+      line-height: 1.5; /* Increases readability */
+  }
+
+  /* Enhanced Sidebar Notification Styles */
+  .notification-header {
+    background-color: #f8f9fa;
+  }
+  
+  .notification-count {
+    background-color: #FF5757;
+  }
+  
+  .notification-items {
+    padding: 0;
+    list-style: none;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+  
+  .notification-item:hover {
+    background-color: rgba(91, 99, 254, 0.05);
+    transform: translateY(-2px);
+  }
+  
+  .unread-notification {
+    background-color: rgba(91, 99, 254, 0.08);
+    border-left: 3px solid #5B63FE;
+  }
+  
+  .notification-avatar {
+    object-fit: cover;
+    border: 2px solid #e6e9ed;
+  }
+  
+  /* Button styling enhancements */
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #5B63FE, #4045C0);
+    border-color: transparent;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #4045C0, #343AA0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(91, 99, 254, 0.3);
+  }
+  
+  .btn-secondary {
+    background: linear-gradient(135deg, #FF7D54, #E65635);
+    border-color: transparent;
+  }
+  
+  .btn-secondary:hover {
+    background: linear-gradient(135deg, #E65635, #D04020);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 125, 84, 0.3);
+  }
+  
+  .notification-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: #e6e9ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c7383;
+  }
+  
+  .notification-message {
+    color: #6c7383;
+    font-size: 0.875rem;
+  }
+  
+  .mark-read-form {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .notification-item:hover .mark-read-form {
+    opacity: 1;
+  }
+  
+  .empty-icon {
+    font-size: 2.5rem;
+    color: #d8d8d8;
+  }
+  
+  /* Right sidebar improvements */
+  #right-sidebar {
+    width: 350px;
+    right: -350px;
+  }
+  
+  #right-sidebar.open {
+    right: 0;
+  }
+
+  #booking-map {
+    height: 300px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .location-search {
+    margin-bottom: 15px;
+  }
+  .location-search input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+  }
+  .coordinates {
+    font-size: 12px;
+    color: #666;
+  }
+  .distance-info {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+  }
+
+  .suggestions-list {
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    display: none;
+  }
+
+  .suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+
+  .suggestion-item:hover {
+    background-color: #f5f5f5;
+  }
+
+  .suggestion-item:last-child {
+    border-bottom: none;
+  }
+
+  .location-details {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .distance-display {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .profile-img {
+  width: 70px;         /* Adjust width as needed */
+  height: 70px;        /* Adjust height as needed */
+  border-radius: 70%;  /* Makes the image round */
+  object-fit: cover;   /* Ensures the image fits neatly */
+  border: 2px solid #ddd;  /* Optional: adds a soft border */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Optional: gives a soft shadow */
+} 
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+  
+  padding: 10px;
+
+}
+</style>
+
+</head>
+<body>
+    <!-- SVG Background Elements -->
+  <img src="/media/assets1/images/backgrounds/wave-bg.svg" alt="" class="bg-wave">
+  <img src="/media/assets1/images/backgrounds/dots-pattern.svg" alt="" class="bg-dots">
+  <img src="/media/assets1/images/backgrounds/blob-shape.svg" alt="" class="bg-blob">
+  <img src="/media/assets1/images/backgrounds/circles-pattern.svg" alt="" class="bg-circles">
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group search-container">
+              <form action="{% url 'search' %}" method="GET" class="search-form">
+                <input type="text" class="form-control" id="navbar-search-input" name="query" placeholder="Search vendors, services, products..." aria-label="search" aria-describedby="search">
+              </form>
+              <div class="input-group-prepend" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item dropdown">
+            <a class="nav-link count-indicator dropdown-toggle position-relative" id="notificationDropdown" href="#" data-toggle="dropdown">
+              <i class="icon-bell mx-0"></i>
+              {% if unread_notifications_count > 0 %}
+                <span class="notification-badge">{{ unread_notifications_count }}</span>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown notification-dropdown" aria-labelledby="notificationDropdown">
+              <p class="mb-0 font-weight-normal dropdown-header">Notifications</p>
+              {% for notification in notifications %}
+                <a class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}">
+                  <div class="d-flex align-items-center">
+                    <div class="notification-icon bg-{% if notification.is_read %}light{% else %}primary{% endif %}">
+                      <i class="ti-info-alt mx-0"></i>
+                    </div>
+                    <div class="notification-content flex-grow-1">
+                      <h6 class="preview-subject">{{ notification.message }}</h6>
+                      <p class="notification-time mb-0">
+                        {{ notification.timestamp|timesince }} ago
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              {% empty %}
+                <a class="dropdown-item notification-item">
+                  <div class="d-flex align-items-center justify-content-center">
+                    <p class="mb-0 text-muted py-2">
+                      No new notifications
+                    </p>
+                  </div>
+                </a>
+              {% endfor %}
+              <a href="{% url 'customer_notifications' %}" class="view-all-link">
+                View All Notifications
+              </a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link count-indicator dropdown-toggle position-relative" id="cartDropdown" href="#" data-toggle="dropdown">
+              <i class="icon-shopping-cart mx-0"></i>
+              {% if cart_count > 0 %}
+                <span class="notification-badge">{{ cart_count }}</span>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="cartDropdown">
+              <p class="mb-0 font-weight-normal dropdown-header">Cart</p>
+              {% for item in cart %}
+                <a class="dropdown-item">
+                  <div class="d-flex align-items-center">
+                    <div class="notification-icon bg-light">
+                      <i class="ti-shopping-cart mx-0"></i>
+                    </div>
+                    <div class="notification-content flex-grow-1">
+                      <h6 class="preview-subject">{{ item.product_name }}</h6>
+                      <p class="notification-time mb-0">
+                        Quantity: {{ item.quantity }}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              {% empty %}
+           >
+              {% endfor %}
+             
+            </div>
+          </li>
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              {% if user.profile_image %}
+              <img src="{{ user.profile_image.url }}" alt="profile"/>
+              {% else %}
+                <img src="/media/assets1/images/default_profile.png" alt="profile"/>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item d-flex flex-column">
+                
+                {% if user.profile_image %}
+                  <img src="{{ user.profile_image.url }}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 70%;">
+                {% else %}
+                  <img src="/media/assets1/images/default_profile.png" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 70%;">
+                {% endif %}
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>User Type:</strong> {{ user.user_type }}</p>
+                <span class="my-details" onclick="toggleInfo(event)">My Details</span>
+
+                <div class="customer-info" id="customer-info">
+                <p><strong>Contact:</strong> {{ customerinfo.contact_no }}</p>
+                <p><strong>Permanent Address:</strong> {{ customerinfo.permanent_address }}</p>
+                <p><strong>Current Address:</strong> <span class="location-text">{{ customerinfo.location_name }}</p>
+
+              </div>
+
+              <div class="dropdown-divider"></div> <!-- Adds a separator -->
+          
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="ti-power-off text-primary me-2"></i> Logout
+              </a>
+          </div>
+          <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="ti-settings"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close ti-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      <div id="right-sidebar" class="settings-panel">
+        <div class="tab-content" id="setting-content">
+          <div class="tab-pane fade show active" id="notifications" role="tabpanel" aria-labelledby="notifications">
+            <div class="notification-header py-3 px-3 d-flex justify-content-between align-items-center border-bottom">
+              <h6 class="mb-0 font-weight-bold text-primary">Notifications</h6>
+              <span class="notification-count badge badge-pill badge-primary">{{ unread_notifications_count }}</span>
+            </div>
+            
+            <div class="notification-list p-2">
+              {% if notifications %}
+              <ul class="icon-data-list notification-items">
+                {% for notification in notifications %}
+                <li class="notification-item mb-3 p-2 rounded {% if not notification.is_read %}unread-notification{% endif %}">
+                  <div class="d-flex">
+                    {% if notification.sender.profile_image %}
+                    <img src="{{ notification.sender.profile_image.url }}" alt="user" class="rounded-circle notification-avatar" width="40" height="40">
+                    {% else %}
+                    <div class="notification-avatar-placeholder rounded-circle">
+                      <i class="ti-user"></i>
+                    </div>
+                    {% endif %}
+                    <div class="ml-3 notification-content flex-grow-1">
+                      <p class="text-primary mb-1 font-weight-bold">{{ notification.sender.get_full_name }}</p>
+                      <p class="mb-0 notification-message">{{ notification.message }}</p>
+                      <div class="d-flex justify-content-between align-items-center mt-1">
+                        <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
+                        {% if not notification.is_read %}
+                        <form method="POST" action="{% url 'mark_notification_read' notification.id %}" class="mark-read-form">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2">Mark Read</button>
+                        </form>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              <div class="text-center mt-3">
+                <a href="{% url 'customer_notifications' %}" class="btn btn-primary btn-sm btn-rounded">View All Notifications</a>
+              </div>
+              {% else %}
+              <div class="empty-notification text-center py-5">
+                <i class="ti-bell empty-icon"></i>
+                <p class="text-muted mt-2">No new notifications</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- partial -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'customerinfo' %}">
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Add Address</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+      
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'customer_booking_history' %}">
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">My Booking History</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+       
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'customer_notifications' %}" >
+              <i class="icon-bar-graph menu-icon"></i>
+              <span class="menu-title">View Notifications</span>
+              <i class="menu-arrow"></i>
+            </a>
+            
+          </li>
+    
+
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3 class="font-weight-bold mb-0">Namaste, {{ user.first_name }}</h3>
+                    <div class="d-flex align-items-center">
+                  
+                      <span id="currentDate" class="text-muted"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                          <h3 class="text-primary font-weight-bold">Vendors Near You</h3>
+                          <button onclick="getLocation(true)" class="btn btn-outline-primary">
+                              <i class="ti-location-pin mr-1"></i> Get Location
+                          </button>
+                      </div>
+                      
+                      <!-- Category Filter Tabs -->
+                      <div class="category-tabs mb-4">
+                          <ul class="nav nav-pills">
+                              <li class="nav-item">
+                                  <a class="nav-link active category-item" data-category="all" href="javascript:void(0);">All</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link category-item" data-category="grocery" href="javascript:void(0);">Grocery</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link category-item" data-category="service_based" href="javascript:void(0);">Services</a>
+                              </li>
+                              <li class="nav-item">
+                                  <a class="nav-link category-item" data-category="ride_service" href="javascript:void(0);">Ride</a>
+                              </li>
+                          </ul>
+                      </div>
+                      
+                      <div class="vendor-container">
+                          {% for vendor in nearby_vendors %}
+                          <div class="vendor-card mb-4 p-3 border rounded shadow-sm" data-category="{{ vendor.user.category }}">
+                            <div class="profile-container">
+                            {% if vendor.user.profile_image %}
+                            <img src="{{ vendor.user.profile_image.url }}" alt="profile" class="profile-img"/>
+                            {% else %}
+                              <img src="/media/assets1/images/default_profile.png" alt="profile" class="profile-img"/>
+                            {% endif %}
+                          </a>
+                          
+                              <h5>{{ vendor.business_name }} 
+                                  {% if vendor.distance_km %}<span class="badge badge-primary">{{ vendor.distance_km }} km</span>{% endif %}
+                                  <span class="badge badge-{% if vendor.availability_status == 'Available' %}success{% elif vendor.availability_status == 'Busy' %}warning{% else %}danger{% endif %} ml-2">
+                                      {{ vendor.availability_status }}
+                                  </span>
+                              </h5>
+                              <p><strong>Contact Number:</strong> {{ vendor.contact_number }}</p>
+                              <p><strong>Email Id:</strong> {{ user.email }}</p>
+                              <p><strong>Location: </strong>{{ vendor.location_name }}</p>
+                              <p><strong>Service Type available:</strong> 
+                                {% if vendor.service_type == 'both' %}
+                                    Home Delivery and Pick Away
+                                {% else %}
+                                    {{ vendor.service_type }}
+                                {% endif %}
+                            </p>
+      </div>
+                              {% if vendor.shopitem_set.all %}
+                              <button class="btn btn-primary btn-block mb-3 toggle-items-btn" 
+                                      type="button" data-target="#addItemForm_{{ vendor.id }}">
+                                  View Items for Ordering
+                              </button>
+                              {% endif %}
+                              
+                              <!-- Item form collapse -->
+                              <div class="collapse vendor-items" id="addItemForm_{{ vendor.id }}">
+                                  <h6>Available Items:</h6>
+                                  <form method="POST" action="{% url 'book_item' vendor.id %}">
+                                    {% csrf_token %}
+                                    
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Price</th>
+                                                <th>Stock</th>
+                                                <th>Quantity</th>
+                                                <th>Cost</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in vendor.shopitem_set.all %}
+                                            <tr>
+                                              <td>{{ item.product_name }} </td>                         
+                                                <td class="price">₹{{ item.price }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>
+                                                    <input type="number" name="quantity_{{ item.id }}" 
+                                                           class="quantity-input" min="0" max="{{ item.quantity }}" 
+                                                           data-price="{{ item.price }}" data-cost-id="cost_{{ item.id }}" 
+                                                           data-item-id="{{ item.id }}"
+                                                           value="0">
+                                                </td>
+                                                <td id="cost_{{ item.id }}">₹0.00</td>
+                                            
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No products available.</td>
+                                            </tr>
+                                             {% endfor %}
+                                        </tbody>
+                                    </table>
+                                
+                                    <!-- Total Amount Display -->
+                                    <h5>Total Amount: <span id="total-amount-{{ vendor.id }}">₹0.00</span></h5>
+                                    {%if vendor.service_type == "both"%}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="pick_up" value="pick_up">
+                                        <label class="form-check-label" for="pick_up">🛍️ Pick Up</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="home_delivery" value="home_delivery">
+                                        <label class="form-check-label" for="home_delivery">🚚 Home Delivery</label>
+                                    </div>
+
+                                    {%elif vendor.service_type == "in_store_service" %}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="pick_up" value="pick_up" checked>
+                                        <label class="form-check-label" for="pick_up">🛍️ Pick Up</label>
+                                    </div>
+                                    {%elif vendor.service_type == "home_delivery"%}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="home_delivery" value="home_delivery" checked>
+                                        <label class="form-check-label" for="home_delivery">🚚 Home Delivery</label>
+                                    </div>
+                                 {%endif%}
+                                
+                                  
+                                
+                                    
+                                    <p id="service-error" style="color: red; display: none;">⚠️ Please select a service type.</p>
+                                
+                                    <!-- Payment Method Selection -->
+                                    <div class="payment-methods mt-3">
+                                        <label>💳 Choose Payment Method:</label><br>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="cod_{{ vendor.id }}" value="cod" checked>
+                                            <label class="form-check-label" for="cod_{{ vendor.id }}">
+                                                💵 Cash on Delivery
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="upi_{{ vendor.id }}" value="upi">
+                                            <label class="form-check-label" for="upi_{{ vendor.id }}">
+                                                📱 UPI
+                                            </label>
+                                        </div>
+                                        
+                                        <!-- UPI QR Code Display -->
+                                        <div id="upi_details_{{ vendor.id }}" style="display: none;" class="mt-3">
+                                            {% if vendor.upi_qr_code %}
+                                                <div class="text-center">
+                                                    <img src="{{ vendor.upi_qr_code.url }}" alt="UPI QR Code" style="max-width: 200px; border: 2px solid #4e73df; border-radius: 10px;">
+                                                    <p class="text-muted mt-2">Scan this QR code to make payment</p>
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle"></i> Vendor has not uploaded a UPI QR code
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <label>📍 Address (if required):</label>
+                                    <input type="text" name="address" class="form-control mb-2">
+                                
+                                    <button type="submit" class="btn btn-primary">Book</button>
+                                </form>
+                              </div>
+
+                              {% if vendor.user.category == "service_based"  %}
+                              <button class="btn btn-primary btn-block mb-3 toggle-items-btn" 
+                                      type="button" data-target="#addServiceForm_{{ vendor.id }}">
+                                  View Services
+                              </button>
+                            
+                              <div class="collapse vendor-items" id="addServiceForm_{{ vendor.id }}">
+                                  <h6>Available Services:</h6>
+                                  <form method="POST" action="{% url 'book_service' vendor.id %}">
+                                    {% csrf_token %}
+                            
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Service Name</th>
+                                                <th>Description</th>
+                                                <th>Price</th>
+                                                <th>Select</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for service in vendor.services_set.all %}
+                                            <tr>
+                                                <td>{{ service.service_name }}</td>
+                                                <td>{{ service.description }}</td>
+                                                <td>₹{{ service.price }}</td>
+                                                <td>
+                                                    <input type="radio" name="selected_service" value="{{ service.id }}" required
+                                                           data-price="{{ service.price|escapejs }}" class="service-radio">
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">No services available.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                            
+                                    <label>📅 Service Date:</label>
+                                    <input type="date" name="service_date" required class="form-control mb-2">
+                            
+                                    <label>⏰ Service Time:</label>
+                                    <input type="time" name="service_time" required class="form-control mb-2">
+
+                                    {%if vendor.service_type == "both"%}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="in_store" value="in_store">
+                                        <label class="form-check-label" for="in_store">🏪 In-Store Service</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="home_service" value="home_service">
+                                        <label class="form-check-label" for="home_service">🏠 Home Service</label>
+                                    </div>
+                                    {%elif vendor.service_type == "in_store_service"%}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="in_store" value="in_store" checked>
+                                        <label class="form-check-label" for="in_store">🏪 In-Store Service</label>
+                                    </div>
+                                    {%elif vendor.service_type == "home_delivery"%}
+                                    <label>🛠️ Choose Service Type:</label><br>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="home_service" value="home_service" checked>
+                                        <label class="form-check-label" for="home_service">🏠 Home Service</label>
+                                    </div>
+                                 {%endif%}
+                                    
+                                    <!-- Payment Method Selection -->
+                                    <div class="payment-methods mt-3">
+                                      <label>💳 Choose Payment Method:</label><br>
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="payment_method" id="cod_service_{{ vendor.id }}" value="cod" checked>
+                                          <label class="form-check-label" for="cod_service_{{ vendor.id }}">
+                                              💵 Cash on Delivery
+                                          </label>
+                                      </div>
+                                 
+                                      
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="payment_method" id="upi_service_{{ vendor.id }}" value="upi">
+                                          <label class="form-check-label" for="upi_service_{{ vendor.id }}">
+                                              📱 UPI
+                                          </label>
+                                      </div>
+                                      
+                                      <!-- UPI QR Code Display -->
+                                      <div id="upi_details_service_{{ vendor.id }}" style="display: none;" class="mt-3">
+                                          {% if vendor.upi_qr_code %}
+                                              <div class="text-center">
+                                                  <img src="{{ vendor.upi_qr_code.url }}" alt="UPI QR Code" style="max-width: 200px; border: 2px solid #4e73df; border-radius: 10px;">
+                                                  <p class="text-muted mt-2">Scan this QR code to make payment</p>
+                                              </div>
+                                          {% else %}
+                                              <div class="alert alert-warning">
+                                                  <i class="fas fa-exclamation-triangle"></i> Vendor has not uploaded a UPI QR code
+                                              </div>
+                                          {% endif %}
+                                      </div>
+                                     
+                                  </div>
+                                  
+                                   
+                            
+                                    <label>📍 Address (if required):</label>
+                                    <input type="text" name="address" class="form-control mb-2">
+                                   
+                                    <button type="submit" class="btn btn-success">Book Service</button>
+                                  </form>
+                              </div>
+                            {% endif %}
+                            
+                            {% if  vendor.user.category == "ride_service" %}
+                            <button class="btn btn-primary btn-block mb-3 toggle-items-btn" 
+                                    type="button" data-target="#addServiceForm_{{ vendor.id }}"
+                                    data-vendor-id="{{ vendor.id }}">
+                                View Services
+                            </button>
+                          
+                            <div class="collapse vendor-items" id="addServiceForm_{{ vendor.id }}">
+                                <h6>Available Services:</h6>
+                                <form method="POST" action="{% url 'book_service' vendor.id %}">
+                                    {% csrf_token %}
+                                    
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>🚗 Vehicle Type</th>
+                                                <th>💺 Seats</th>
+                                                <th>💰 Price ₹ per/km</th>
+                                                <th>Select</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for service in vendor.services_set.all %}
+                                            <tr>
+                                                <td>{{ service.service_name }}</td>
+                                                <td>{{ service.description }}</td>
+                                                <td>₹{{ service.price }}</td>
+                                                <td>
+                                                    <input type="radio" name="selected_service" value="{{ service.id }}" required
+                                                           data-price="{{ service.price|escapejs }}" class="service-radio">
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">No services available.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    <label>📅 Service Date:</label>
+                                    <input type="date" name="service_date" required class="form-control mb-2">
+
+                                    <label>⏰ Service Time:</label>
+                                    <input type="time" name="service_time" required class="form-control mb-2">
+
+                                    <label>🛠️ Choose Service Type:</label><br>                                
+                                    <div class="form-check" required class="form-control mb-2">
+                                        <input class="form-check-input" type="radio" name="service_type" id="transport" value="transport" checked>
+                                        <label class="form-check-label" for="pick_up">Transport</label>
+                                    </div>
+
+                                    <!-- Map Container -->
+                                    <div class="form-group">
+                                        <div id="booking-map-{{ vendor.id }}" style="height: 300px; margin-bottom: 20px;"></div>
+                                    </div>
+
+                                    <!-- Location Search -->
+                                    <div class="form-group">
+                                        <label>📍 Pickup Location:</label>
+                                        <input type="text" id="pickup-search-{{ vendor.id }}" class="form-control" placeholder="Search pickup location...">
+                                        <div id="pickup-suggestions-{{ vendor.id }}" class="suggestions-list"></div>
+                                        <input type="hidden" id="pickup_location-{{ vendor.id }}" name="pickup_location" />
+                                        <input type="hidden" id="pickup_latitude-{{ vendor.id }}" name="pickup_latitude" />
+                                        <input type="hidden" id="pickup_longitude-{{ vendor.id }}" name="pickup_longitude" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>📍 Dropoff Location:</label>
+                                        <input type="text" id="dropoff-search-{{ vendor.id }}" class="form-control" placeholder="Search dropoff location...">
+                                        <div id="dropoff-suggestions-{{ vendor.id }}" class="suggestions-list"></div>
+                                        <input type="hidden" id="dropoff_location-{{ vendor.id }}" name="dropoff_location" />
+                                        <input type="hidden" id="dropoff_latitude-{{ vendor.id }}" name="dropoff_latitude" />
+                                        <input type="hidden" id="dropoff_longitude-{{ vendor.id }}" name="dropoff_longitude" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Distance:</label>
+                                        <div id="distance-display-{{ vendor.id }}" class="form-control-plaintext">-</div>
+                                        <input type="hidden" name="distance_km" id="distance_km-{{ vendor.id }}">
+                                    </div>
+
+                                  
+                                    <!-- Payment Method Selection -->
+                                    <div class="payment-methods mt-3">
+                                      <label>💳 Choose Payment Method:</label><br>
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="payment_method" id="cod_ride_{{ vendor.id }}" value="cod" checked>
+                                          <label class="form-check-label" for="cod_ride_{{ vendor.id }}">
+                                              💵 Cash on Delivery
+                                          </label>
+                                      </div>
+                                 
+                                      
+                                      <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="payment_method" id="upi_ride_{{ vendor.id }}" value="upi">
+                                          <label class="form-check-label" for="upi_ride_{{ vendor.id }}">
+                                              📱 UPI
+                                          </label>
+                                      </div>
+                                      
+                                      <!-- UPI QR Code Display -->
+                                      <div id="upi_details_ride_{{ vendor.id }}" style="display: none;" class="mt-3">
+                                          {% if vendor.upi_qr_code %}
+                                              <div class="text-center">
+                                                  <img src="{{ vendor.upi_qr_code.url }}" alt="UPI QR Code" style="max-width: 200px; border: 2px solid #4e73df; border-radius: 10px;">
+                                                  <p class="text-muted mt-2">Scan this QR code to make payment</p>
+                                              </div>
+                                          {% else %}
+                                              <div class="alert alert-warning">
+                                                  <i class="fas fa-exclamation-triangle"></i> Vendor has not uploaded a UPI QR code
+                                              </div>
+                                          {% endif %}
+                                      </div>
+                                     
+                                  </div>
+                                    <button type="submit" class="btn btn-success">Book Service</button>
+                                </form>
+                            </div>
+                          {% endif %}
+
+                          </div>
+                          {% empty %}
+                          <p>No nearby vendors found.</p>
+                          {% endfor %}
+                          
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>               
+              </div>
+          
+
+     <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">My Recent Booking</h4>
+
+                <!-- Product-Based Bookings Table -->
+                {% if recent_bookings %}
+                    <h5 class="text-primary">📦 Product-Based Bookings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Vendor Name</th>
+                                    <th>Shop</th>
+                                    <th>Items</th>
+                                    <th>Total Price</th>
+                                    <th>Service Type</th>
+                                    <th>Booking Time</th>
+                                    <th>Delivered Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_bookings %}
+                                    <tr data-status="{{ booking.status }}">
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.vendor.user.username }}</td>  
+                                        <td>{{ booking.vendor.business_name }}</td>  
+                                        <td>
+                                            {% for item in booking.items.all %}
+                                                {{ item.item.product_name }} ({{ item.quantity }}) - ₹{{ item.price }}<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td>₹{{ booking.total_price }}</td>  
+                                        <td>{{ booking.service_type }}</td> 
+                                        <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>  
+                                        <td>{{ booking.delivered_time|date:"M d, Y h:i A"|default:"-" }}</td>
+                                        <td>
+                                            {% if booking.status == "Pending" %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% elif booking.status == "Confirmed" %}
+                                                <span class="badge bg-success">Confirmed</span>
+                                            {% elif booking.status == "Delivered" %}
+                                                <span class="badge bg-success">Delivered</span>
+                                            {% elif booking.status == "Cancelled" %}
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ booking.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="10" class="text-center text-danger font-weight-bold">
+                                            No recent product-based bookings available.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p style="color: red; font-weight: bold;">No recent product-based bookings available.</p>
+                {% endif %}
+
+                <br>
+
+                <!-- Service-Based Bookings Table -->
+                {% if recent_service_bookings %}
+                  
+                    <h5 class="text-primary">🛠️ Service-Based Bookings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Vendor Name</th>
+                                    <th>Shop</th>
+                                    <th>Service</th>
+                                    <th>Total Price</th>
+                                    <th>Service Type</th>
+                                    <th>Booking Time</th>
+                                    <th>Complete Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_service_bookings %}
+                                    {% if booking.service_type != "transport" %}
+                                    <tr data-status="{{ booking.status }}">
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.vendor.user.username }}</td>  
+                                        <td>{{ booking.vendor.business_name }}</td>  
+                                        <td>{{ booking.service.service_name }}</td>
+                                        <td>₹{{ booking.total_price }}</td>  
+                                        <td>{{ booking.service_type }}</td> 
+                                        <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>  
+                                        <td>{{ booking.complete_time|date:"M d, Y h:i A"|default:"-" }}</td>
+                                        <td>
+                                            {% if booking.status == "Pending" %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% elif booking.status == "Confirmed" %}
+                                                <span class="badge bg-success">Confirmed</span>
+                                            {% elif booking.status == "Completed" %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% elif booking.status == "Cancelled" %}
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ booking.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {%endif%}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="10" class="text-center text-danger font-weight-bold">
+                                            No recent service-based bookings available.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                {% else %}
+                    <p style="color: red; font-weight: bold;">No recent service-based bookings available.</p>                  
+                {% endif %}
+<br>
+
+
+                <!-- Service-Based Bookings Table -->
+                {% if recent_service_bookings %}
+                    <h5 class="text-primary">Transport Bookings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Vendor Name</th>
+                                    <th>Shop</th>
+                                    <th>Car Type</th>
+                                    <th>Seats</th>
+                                    <th>Price/km</th>
+                                    <th>Distance</th>
+                                    <th>Total Price</th>
+                                    <th>Payment Method</th>
+                                    <th>Service Type</th>
+                                    <th>Booking Time</th>
+                                    <th>Complete Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_service_bookings %}
+                                    {% if booking.service_type == "transport" %}
+                                    <tr data-status="{{ booking.status }}">
+                                        <td>{{ booking.id }}</td>
+                                        <td>{{ booking.vendor.user.username }}</td>  
+                                        <td>{{ booking.vendor.business_name }}</td>  
+                                        <td>{{ booking.service.service_name }}</td>
+                                        <td>{{ booking.service.description }}</td>  
+                                        <td>₹{{ booking.service.price }}</td>
+                                        <td>{{ booking.distance_km|default:"-" }} km</td>
+                                        <td>₹{{ booking.total_price }}</td>
+                                        <td>{{ booking.payment_method }}</td>
+                                        <td>{{ booking.service_type }}</td> 
+                                        <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>  
+                                        <td>{{ booking.complete_time|date:"M d, Y h:i A"|default:"-" }}</td>
+                                        <td>
+                                            {% if booking.status == "Pending" %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% elif booking.status == "Confirmed" %}
+                                                <span class="badge bg-success">Confirmed</span>
+                                            {% elif booking.status == "Completed" %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% elif booking.status == "Cancelled" %}
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ booking.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {%endif%}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="13" class="text-center text-danger font-weight-bold">
+                                            No recent transport bookings available.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                {% else %}
+                    <p style="color: red; font-weight: bold;">No recent transport bookings available.</p>                  
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+      
+   
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>   
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+  <script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="/media/assets1/js/dataTables.select.min.js"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/media/assets1/js/dashboard.js"></script>
+  <script src="/media/assets1/js/Chart.roundedBarCharts.js"></script>
+  <script>
+
+
+
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    
+                                    addToCartButtons.forEach(button => {
+                                        // Remove any existing event listeners
+                                        const newButton = button.cloneNode(true);
+                                        button.parentNode.replaceChild(newButton, button);
+                                        
+                                        // Add new event listener
+                                        newButton.addEventListener('click', function() {
+                                            // Prevent multiple clicks
+                                            if (this.dataset.processing === 'true') {
+                                                return;
+                                            }
+                                            
+                                            this.dataset.processing = 'true';
+                                            const itemId = this.getAttribute('data-item-id');
+                                            const vendorId = this.getAttribute('data-vendor-id');
+                                            const productName = this.getAttribute('data-product-name');
+                                            const quantityInput = document.querySelector(`input[name="quantity_${itemId}"]`);
+                                            const quantity = parseInt(quantityInput.value) || 0;
+                                            
+                                            // Validate quantity is not negative
+                                            if (quantity < 0) {
+                                                showMessage(this, 'Quantity cannot be negative', 'danger');
+                                                this.dataset.processing = 'false';
+                                                return;
+                                            }
+
+                                            // Disable button during request
+                                            this.disabled = true;
+                                            this.innerHTML = '<i class="ti-shopping-cart"></i> Adding...';
+                                            
+                                            // Create form data
+                                            const formData = new FormData();
+                                            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+                                            formData.append('quantity', quantity);
+                                            formData.append('next', window.location.href);
+                                            
+                                            // Send AJAX request
+                                            fetch(`/add-to-cart/${itemId}/`, {
+                                                method: 'POST',
+                                                body: formData,
+                                                headers: {
+                                                    'X-Requested-With': 'XMLHttpRequest'
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.status === 'success') {
+                                                    // Show success message
+                                                    showMessage(this, data.message, 'success');
+                                                    
+                                                    // Update cart count
+                                                    updateCartCount(data.cart_count);
+                                                    
+                                                    // Reset button state
+                                                    setTimeout(() => {
+                                                        this.disabled = false;
+                                                        this.dataset.processing = 'false';
+                                                    }, 2000);
+                                                } else {
+                                                    // Show error message
+                                                    showMessage(this, data.message || 'Error adding item to cart', 'danger');
+                                                    this.disabled = false;
+                                                    this.dataset.processing = 'false';
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                showMessage(this, 'Network error. Please try again.', 'danger');
+                                                this.disabled = false;
+                                                this.dataset.processing = 'false';
+                                            });
+                                        });
+                                    });
+                                    
+                                    // Helper function to show messages
+                                    function showMessage(element, message, type) {
+                                        // Remove any existing messages
+                                        const existingMessage = element.parentElement.querySelector('.alert');
+                                        if (existingMessage) {
+                                            existingMessage.remove();
+                                        }
+
+                                        // Create new message
+                                        const messageDiv = document.createElement('div');
+                                        messageDiv.className = `alert alert-${type} mt-2`;
+                                        messageDiv.textContent = message;
+                                        element.parentElement.appendChild(messageDiv);
+
+                                        // Remove message after 3 seconds
+                                        setTimeout(() => {
+                                            messageDiv.remove();
+                                        }, 3000);
+                                    }
+
+                                    // Helper function to update cart count
+                                    function updateCartCount(count) {
+                                        const cartBadge = document.querySelector('.notification-badge');
+                                        if (cartBadge) {
+                                            if (count > 0) {
+                                                cartBadge.textContent = count;
+                                                cartBadge.style.display = 'block';
+                                            } else {
+                                                cartBadge.style.display = 'none';
+                                            }
+                                        }
+                                    }
+
+                                    // Update total amount when quantity changes
+                                    document.querySelectorAll('.quantity-input').forEach(input => {
+                                        input.addEventListener('input', function() {
+                                            const price = parseFloat(this.getAttribute('data-price'));
+                                            const costId = this.getAttribute('data-cost-id');
+                                            const quantity = parseInt(this.value) || 0;
+                                            const maxStock = parseInt(this.getAttribute('max'));
+                                            
+                                            // Validate quantity is not negative
+                                            if (quantity < 0) {
+                                                this.value = 0;
+                                                showMessage(this, 'Quantity cannot be negative', 'warning');
+                                            }
+                                            
+                                            // Update cost
+                                            const cost = price * quantity;
+                                            document.getElementById(costId).textContent = `₹${cost.toFixed(2)}`;
+                                            
+                                            // Update total
+                                            updateTotalAmount();
+                                        });
+                                    });
+                                    
+                                    function updateTotalAmount() {
+                                        let total = 0;
+                                        document.querySelectorAll('.quantity-input').forEach(input => {
+                                            const price = parseFloat(input.getAttribute('data-price'));
+                                            const quantity = parseInt(input.value) || 0;
+                                            total += price * quantity;
+                                        });
+                                        document.getElementById('total-amount').textContent = total.toFixed(2);
+                                    }
+                                });
+                              
+
+
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Add to cart functionality
+                                    
+                                    addToCartButtons.forEach(button => {
+                                        // Remove any existing event listeners
+                                        const newButton = button.cloneNode(true);
+                                        button.parentNode.replaceChild(newButton, button);
+                                        
+                                        // Add new event listener
+                                        newButton.addEventListener('click', function() {
+                                            // Prevent multiple clicks
+                                            if (this.dataset.processing === 'true') {
+                                                return;
+                                            }
+                                            
+                                            this.dataset.processing = 'true';
+                                            const itemId = this.getAttribute('data-item-id');
+                                            const vendorId = this.getAttribute('data-vendor-id');
+                                            const productName = this.getAttribute('data-product-name');
+                                            const quantityInput = document.querySelector(`input[name="quantity_${itemId}"]`);
+                                            const quantity = parseInt(quantityInput.value) || 0;
+                                            
+                                            // Validate quantity is not negative
+                                            if (quantity < 0) {
+                                                showMessage(this, 'Quantity cannot be negative', 'danger');
+                                                this.dataset.processing = 'false';
+                                                return;
+                                            }
+
+                                            // Disable button during request
+                                            this.disabled = true;
+                                            this.innerHTML = '<i class="ti-shopping-cart"></i> Adding...';
+                                            
+                                            // Create form data
+                                            const formData = new FormData();
+                                            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+                                            formData.append('quantity', quantity);
+                                            formData.append('next', window.location.href);
+                                            
+                                            // Send AJAX request
+                                            fetch(`/add-to-cart/${itemId}/`, {
+                                                method: 'POST',
+                                                body: formData,
+                                                headers: {
+                                                    'X-Requested-With': 'XMLHttpRequest'
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.status === 'success') {
+                                                    // Show success message
+                                                    showMessage(this, data.message, 'success');
+                                                    
+                                                    // Update cart count
+                                                    updateCartCount(data.cart_count);
+                                                    
+                                                    // Reset button state
+                                                    setTimeout(() => {
+                                                        this.disabled = false;
+                                                        this.innerHTML = '<i class="ti-shopping-cart"></i> Add to Cart';
+                                                        this.dataset.processing = 'false';
+                                                    }, 2000);
+                                                } else {
+                                                    // Show error message
+                                                    showMessage(this, data.message || 'Error adding item to cart', 'danger');
+                                                    this.disabled = false;
+                                                    this.innerHTML = '<i class="ti-shopping-cart"></i> Add to Cart';
+                                                    this.dataset.processing = 'false';
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                showMessage(this, 'Network error. Please try again.', 'danger');
+                                                this.disabled = false;
+                                                this.dataset.processing = 'false';
+                                            });
+                                        });
+                                    });
+                                    
+                                    // Helper function to show messages
+                                    function showMessage(element, message, type) {
+                                        // Remove any existing messages
+                                        const existingMessage = element.parentElement.querySelector('.alert');
+                                        if (existingMessage) {
+                                            existingMessage.remove();
+                                        }
+
+                                        // Create new message
+                                        const messageDiv = document.createElement('div');
+                                        messageDiv.className = `alert alert-${type} mt-2`;
+                                        messageDiv.textContent = message;
+                                        element.parentElement.appendChild(messageDiv);
+
+                                        // Remove message after 3 seconds
+                                        setTimeout(() => {
+                                            messageDiv.remove();
+                                        }, 3000);
+                                    }
+
+                                    // Helper function to update cart count
+                                    function updateCartCount(count) {
+                                        const cartBadge = document.querySelector('.notification-badge');
+                                        if (cartBadge) {
+                                            if (count > 0) {
+                                                cartBadge.textContent = count;
+                                                cartBadge.style.display = 'block';
+                                            } else {
+                                                cartBadge.style.display = 'none';
+                                            }
+                                        }
+                                    }
+
+                                    // Update total amount when quantity changes
+                                    document.querySelectorAll('.quantity-input').forEach(input => {
+                                        input.addEventListener('input', function() {
+                                            const price = parseFloat(this.getAttribute('data-price'));
+                                            const costId = this.getAttribute('data-cost-id');
+                                            const quantity = parseInt(this.value) || 0;
+                                            const maxStock = parseInt(this.getAttribute('max'));
+                                            
+                                            // Validate quantity is not negative
+                                            if (quantity < 0) {
+                                                this.value = 0;
+                                                showMessage(this, 'Quantity cannot be negative', 'warning');
+                                            }
+                                            
+                                            // Update cost
+                                            const cost = price * quantity;
+                                            document.getElementById(costId).textContent = `₹${cost.toFixed(2)}`;
+                                            
+                                            // Update total
+                                            updateTotalAmount();
+                                        });
+                                    });
+                                    
+                                    function updateTotalAmount() {
+                                        let total = 0;
+                                        document.querySelectorAll('.quantity-input').forEach(input => {
+                                            const price = parseFloat(input.getAttribute('data-price'));
+                                            const quantity = parseInt(input.value) || 0;
+                                            total += price * quantity;
+                                        });
+                                        document.getElementById('total-amount').textContent = total.toFixed(2);
+                                    }
+                                });
+                              
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+      document.querySelectorAll("tr[data-status='Delivered']").forEach(row => {
+        row.remove();
+      });
+    }, 120000); // 2 minutes = 120000ms
+  });
+
+
+document.addEventListener("DOMContentLoaded", function() {
+        let quantityInputs = document.querySelectorAll(".quantity-input");
+        let totalAmountElement = document.getElementById("total-amount");
+
+        quantityInputs.forEach(input => {
+            input.addEventListener("input", function() {
+                let maxStock = parseInt(this.getAttribute("max")); // Get available stock
+                let price = parseFloat(this.getAttribute("data-price")); // Get item price
+                let costElement = document.getElementById(this.getAttribute("data-cost-id")); // Cost cell
+                let value = parseInt(this.value);
+
+                // Stock validation
+                if (value > maxStock) {
+                    this.value = maxStock;
+                    alert(`⚠️ Only ${maxStock} available for this item.`);
+                } else if (value < 0) {
+                    this.value = 0;
+                }
+
+                // Update individual item cost
+                let cost = price * value;
+                costElement.textContent = `₹${cost.toFixed(2)}`;
+
+                // Update total
+                updateTotalAmount();
+            });
+        });
+
+        function updateTotalAmount() {
+            let total = 0;
+            document.querySelectorAll(".quantity-input").forEach(input => {
+                let price = parseFloat(input.getAttribute("data-price"));
+                let quantity = parseInt(input.value) || 0;
+                total += price * quantity;
+            });
+            totalAmountElement.textContent = total.toFixed(2);
+        }
+    });
+
+    // Validate Service Type Selection Before Form Submission
+    function validateServiceType() {
+        let serviceType = document.querySelector('input[name="service_type"]:checked');
+        let errorMsg = document.getElementById("service-error");
+
+        if (!serviceType) {
+            errorMsg.style.display = "block";
+            return false;
+        }
+        errorMsg.style.display = "none";
+        return true;
+    }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".toggle-items-btn");
+    
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            const targetId = this.getAttribute("data-target");
+            const targetCollapse = document.querySelector(targetId);
+
+            // Close all collapses first
+            document.querySelectorAll(".vendor-items").forEach(item => {
+                if (item !== targetCollapse) {
+                    item.classList.remove("show");
+                }
+            });
+
+            // Toggle the selected vendor's item list
+            targetCollapse.classList.toggle("show");
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const quantityInputs = document.querySelectorAll(".quantity-input");
+    const totalAmountSpan = document.getElementById("total-amount");
+
+    function updateTotal() {
+        let totalAmount = 0;
+        quantityInputs.forEach(input => {
+            const price = parseFloat(input.getAttribute("data-price"));
+            const quantity = parseInt(input.value) || 0;
+            const cost = price * quantity;
+            document.getElementById(input.getAttribute("data-cost-id")).innerText = `₹${cost.toFixed(2)}`;
+            totalAmount += cost;
+        });
+        totalAmountSpan.innerText = total.toFixed(2);
+    }
+
+    quantityInputs.forEach(input => {
+        input.addEventListener("input", updateTotal);
+    });
+});
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      let today = new Date();
+      let formattedDate = today.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+      document.getElementById("currentDate").textContent = `Today (${formattedDate})`;
+    });
+
+    function toggleInfo(event) {
+    event.stopPropagation(); // Prevents event bubbling
+    var infoSection = document.getElementById("customer-info");
+
+    // Toggle visibility
+    if (infoSection.style.display === "block") {
+        infoSection.style.display = "none";
+    } else {
+        infoSection.style.display = "block";
+        
+        // Ensure logout button remains visible by checking dropdown height
+        var dropdownMenu = document.querySelector(".dropdown-menu");
+        dropdownMenu.scrollTop = dropdownMenu.scrollHeight; // Scroll to bottom
+    }
+}
+     
+
+</script>
+  
+  <!-- End custom js for this page-->
+
+  <!-- Notification Sound and Real-time Notification Checking -->
+  <audio id="notification-sound" src="/media/assets1/sounds/notification.mp3" preload="auto"></audio>
+  <script>
+    // Store current notification count
+    let currentNotificationCount = parseInt('{{ unread_notifications_count }}');
+    
+    // Get location function
+  function getLocation(manualTrigger = false) {
+    // Check if this is a manual trigger (from button click) or auto-detection
+    if (!manualTrigger) {
+      // Only proceed with auto-detection if customer doesn't have location in database
+      const dbLat = '{{ customerinfo.latitude }}';
+      const dbLng = '{{ customerinfo.longitude }}';
+      
+      if (dbLat && dbLng) {
+        console.log('Location already set in database, skipping auto-detection');
+        return; // Exit early if we already have coordinates in the database
+      }
+    }
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          // Success callback
+          document.getElementById('latitude').value = position.coords.latitude;
+          document.getElementById('longitude').value = position.coords.longitude;
+          
+          // Get address from coordinates using reverse geocoding
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+            .then(response => response.json())
+            .then(data => {
+              const locationName = data.display_name || 'Unknown location';
+              document.getElementById('location_name').value = locationName;
+              
+              // Only submit form if it's a manual trigger or we don't have coordinates
+              if (manualTrigger) {
+                document.getElementById('location-form').submit();
+              } else {
+                // For auto-detection, only submit if we don't have coordinates in DB
+                const dbLat = '{{ customerinfo.latitude }}';
+                const dbLng = '{{ customerinfo.longitude }}';
+                if (!dbLat || !dbLng) {
+                  document.getElementById('location-form').submit();
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error getting location name:', error);
+              // Only submit form on error if it was manually triggered
+              if (manualTrigger) {
+                document.getElementById('location-form').submit();
+              }
+            });
+        },
+        function(error) {
+          // Error callback - only show alert for manual triggers
+          console.error('Error getting location:', error);
+          if (manualTrigger) {
+            alert('Unable to retrieve your location. Please allow location access or enter it manually.');
+          }
+        }
+      );
+    } else {
+      if (manualTrigger) {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+  }
+
+  // Function to check for new notifications
+    function checkForNewNotifications() {
+      fetch('/check-new-notifications/')
+        .then(response => response.json())
+        .then(data => {
+          // If there are new notifications
+          if (data.unread_count > currentNotificationCount) {
+            // Play notification sound
+            document.getElementById('notification-sound').play();
+            
+            // Update the badge count
+            const badgeElement = document.querySelector('.notification-badge');
+            if (badgeElement) {
+              badgeElement.textContent = data.unread_count;
+              badgeElement.style.display = 'block';
+            } else if (data.unread_count > 0) {
+              // Create badge if it doesn't exist
+              const notificationIcon = document.querySelector('#notificationDropdown');
+              const badge = document.createElement('span');
+              badge.className = 'notification-badge';
+              badge.textContent = data.unread_count;
+              notificationIcon.appendChild(badge);
+            }
+            
+            // Update sidebar notification count if it exists
+            const sidebarCount = document.querySelector('.notification-count');
+            if (sidebarCount) {
+              sidebarCount.textContent = data.unread_count;
+            }
+            
+            // Update current count
+            currentNotificationCount = data.unread_count;
+            
+            // Refresh the notifications list if needed
+            if (data.should_refresh) {
+              location.reload();
+            }
+          }
+        })
+        .catch(error => console.error('Error checking notifications:', error));
+    }
+    
+    // Check for new notifications every 30 seconds
+    setInterval(checkForNewNotifications, 30000);
+  </script>
+
+<!-- Vendor card filter and search JavaScript -->
+<script>
+  // Get location function
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          // Success callback
+          document.getElementById('latitude').value = position.coords.latitude;
+          document.getElementById('longitude').value = position.coords.longitude;
+          
+          // Get address from coordinates using reverse geocoding
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+            .then(response => response.json())
+            .then(data => {
+              const locationName = data.display_name || 'Unknown location';
+              document.getElementById('location_name').value = locationName;
+              
+              // Submit the form to update location
+              document.getElementById('location-form').submit();
+            })
+            .catch(error => {
+              console.error('Error getting location name:', error);
+              // Still submit form even if reverse geocoding fails
+              document.getElementById('location-form').submit();
+            });
+        },
+        function(error) {
+          // Error callback
+          console.error('Error getting location:', error);
+          alert('Unable to retrieve your location. Please allow location access or enter it manually.');
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+  
+  // Filter vendors by category
+  function filterVendors(category) {
+    // Update active category UI
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    
+    // Filter vendors
+    const vendors = document.querySelectorAll('.vendor-item');
+    vendors.forEach(vendor => {
+      if (category === 'all' || user.dataset.category === category ||
+          (category === 'ride_service' && user.dataset.category === 'service_based' && 
+           vendor.querySelector('.badge-warning'))) {
+        vendor.style.display = '';
+      } else {
+        vendor.style.display = 'none';
+      }
+    });
+  }
+  
+  // Search vendors function
+  function searchVendors() {
+    const searchInput = document.getElementById('vendorSearch').value.toLowerCase();
+    const vendors = document.querySelectorAll('.vendor-item');
+    
+    vendors.forEach(vendor => {
+      const vendorName = vendor.dataset.name;
+      const vendorContent = vendor.textContent.toLowerCase();
+      
+      if (vendorName.includes(searchInput) || vendorContent.includes(searchInput)) {
+        vendor.style.display = '';
+      } else {
+        vendor.style.display = 'none';
+      }
+    });
+  }
+  
+  // Initialize toggle buttons for vendor items
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.toggle-items-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        const itemsDiv = document.querySelector(target);
+        
+        if (itemsDiv.classList.contains('show')) {
+          itemsDiv.classList.remove('show');
+        } else {
+          // Close all other open items first
+          document.querySelectorAll('.vendor-items.show').forEach(div => {
+            if (div.id !== target.substring(1)) {
+              div.classList.remove('show');
+            }
+          });
+          itemsDiv.classList.add('show');
+        }
+      });
+    });
+    
+    // Initialize category filter
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const category = this.getAttribute('data-category');
+        filterVendors(category);
+      });
+    });
+    
+    // Check if location data exists in database before auto-detecting
+    const dbLat = '{{ customerinfo.latitude|default:"" }}';
+    const dbLng = '{{ customerinfo.longitude|default:"" }}';
+    
+    // Only auto-detect if we don't have location data in the database
+    if (!dbLat || !dbLng) {
+      // Delay and pass 'false' to indicate this is not a manual trigger
+      setTimeout(function() { getLocation(false); }, 1500); 
+    }
+  });
+</script>
+
+<!-- Hidden form for location updates -->
+<form id="location-form" method="POST" style="display: none;">
+  {% csrf_token %}
+  <input type="hidden" id="latitude" name="latitude">
+  <input type="hidden" id="longitude" name="longitude">
+  <input type="hidden" id="location_name" name="location_name">
+</form>
+
+<script>
+  // Filter vendors by category
+  function filterVendors(category) {
+    // Get all vendor cards
+    const vendors = document.querySelectorAll('.vendor-card');
+    
+    // Update active class on category tabs
+    document.querySelectorAll('.category-item').forEach(item => {
+      if (item.getAttribute('data-category') === category) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+    
+    // Show/hide vendors based on category
+    vendors.forEach(vendor => {
+      const vendorCategory = vendor.getAttribute('data-category');
+      
+      if (category === 'all' || vendorCategory === category) {
+        vendor.style.display = '';
+      } else {
+        vendor.style.display = 'none';
+      }
+    });
+  }
+  
+  // Add necessary scripts for item toggling
+  document.addEventListener('DOMContentLoaded', function() {
+    // Connect quantity inputs to their respective hidden form fields
+    document.querySelectorAll('.quantity-input').forEach(input => {
+      input.addEventListener('change', function() {
+        const itemId = this.getAttribute('data-item-id');
+        const hiddenField = document.getElementById('hidden_quantity_' + itemId);
+        if (hiddenField) {
+          hiddenField.value = this.value;
+        }
+      });
+    });
+    
+    // Initialize category filter tabs
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const category = this.getAttribute('data-category');
+        filterVendors(category);
+      });
+    });
+    
+    // Initialize toggle buttons for vendor items
+    document.querySelectorAll('.toggle-items-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        const itemsDiv = document.querySelector(target);
+        
+        if (itemsDiv.classList.contains('show')) {
+          itemsDiv.classList.remove('show');
+        } else {
+          // Close all other open items first
+          document.querySelectorAll('.vendor-items.show').forEach(div => {
+            if (div.id !== target.substring(1)) {
+              div.classList.remove('show');
+            }
+          });
+          itemsDiv.classList.add('show');
+        }
+      });
+    });
+    
+    // Cleanup delivered items periodically
+    setInterval(() => {
+      document.querySelectorAll("tr[data-status='Delivered'], tr[data-status='Completed']").forEach(row => {
+        setTimeout(() => {
+          row.remove();
+        }, 120000); // Remove after 2 minutes
+      });
+    }, 5000); // Check every 5 seconds
+  });
+</script>
+
+<!-- Add this section where you want the booking form to appear -->
+
+
+<!-- Add this script at the end of the body -->
+<script>
+    // Initialize map and variables
+    var maps = {}; // Store maps for each vendor
+    var pickupMarkers = {}; // Store pickup markers for each vendor
+    var dropoffMarkers = {}; // Store dropoff markers for each vendor
+    var currentPricePerKm = 0;
+    var searchTimeout = null;
+
+    // Function to initialize map for a specific vendor
+    function initializeMap(vendorId) {
+        if (!maps[vendorId]) {
+            const mapElement = document.getElementById(`booking-map-${vendorId}`);
+            if (!mapElement) return;
+
+            maps[vendorId] = L.map(mapElement).setView([20.5937, 78.9629], 5); // Center on India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(maps[vendorId]);
+        }
+        return maps[vendorId];
+    }
+    let searchTimeout;
+
+    // Extract structured address components from the OpenStreetMap result
+    function getLocationDetails(result) {
+        const parts = result.display_name.split(',');
+        const street = parts[0].trim();
+        const city = parts[1] ? parts[1].trim() : '';
+        let pincode = '';
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i].trim();
+            if (/^\d{6}$/.test(part)) {
+                pincode = part;
+                break;
+            }
+        }
+
+        return {
+            display: `${street}, ${city}${pincode ? ' - ' + pincode : ''}`,
+            street: street,
+            city: city,
+            pincode: pincode
+        };
+    }
+
+    // Show location suggestions based on user input
+    function showSuggestions(input, suggestionsDiv, vendorId) {
+        const query = input.value.trim();
+        if (query.length < 3) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        searchTimeout = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                .then(response => response.json())
+                .then(results => {
+                if (results && results.length > 0) {
+                        suggestionsDiv.innerHTML = '';
+
+                        results.forEach(result => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+
+                            const locationDetails = getLocationDetails(result);
+                            div.innerHTML = `
+                                <div>${locationDetails.street}</div>
+                                <div class="location-details">${locationDetails.city}${locationDetails.pincode ? ' - ' + locationDetails.pincode : ''}</div>
+                            `;
+
+                            div.onclick = function () {
+                                // ✅ Fixed: Determine if suggestionsDiv is for pickup or dropoff
+                                const isPickup = suggestionsDiv.id.includes("pickup");
+
+                                // ✅ Fixed: Use correct field IDs based on type
+                                const latField = document.getElementById(`${isPickup ? 'pickup_latitude' : 'dropoff_latitude'}-${vendorId}`);
+                                const lngField = document.getElementById(`${isPickup ? 'pickup_longitude' : 'dropoff_longitude'}-${vendorId}`);
+                                const locationField = document.getElementById(`${isPickup ? 'pickup_location' : 'dropoff_location'}-${vendorId}`);
+                                const inputField = document.getElementById(`${isPickup ? 'pickup-search' : 'dropoff-search'}-${vendorId}`);
+
+                                // ✅ Fixed: Update values correctly
+                                inputField.value = locationDetails.display;
+                                latField.value = result.lat;
+                                lngField.value = result.lon;
+                                locationField.value = locationDetails.display;
+
+                                suggestionsDiv.style.display = 'none';
+
+                                // ✅ Optional: Update distance if function is available
+                                if (typeof updateDistance === 'function') {
+                                    updateDistance();
+                                }
+                            };
+
+                            suggestionsDiv.appendChild(div);
+                        });
+
+                        suggestionsDiv.style.display = 'block';
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    suggestionsDiv.style.display = 'none';
+                });
+        }, 500);
+    }
+    // Function to calculate distance for a specific vendor
+    function calculateDistance(vendorId) {
+        if (pickupMarkers[vendorId] && dropoffMarkers[vendorId]) {
+            var pickupLatLng = pickupMarkers[vendorId].getLatLng();
+            var dropoffLatLng = dropoffMarkers[vendorId].getLatLng();
+            
+            // Calculate distance in kilometers using Haversine formula
+            var R = 6371; // Earth's radius in km
+            var dLat = (dropoffLatLng.lat - pickupLatLng.lat) * Math.PI / 180;
+            var dLon = (dropoffLatLng.lng - pickupLatLng.lng) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(pickupLatLng.lat * Math.PI / 180) * Math.cos(dropoffLatLng.lat * Math.PI / 180) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            var distance = R * c;
+            
+            // Update distance display
+            const distanceDisplay = document.getElementById(`distance-display-${vendorId}`);
+            const distanceInput = document.getElementById(`distance_km-${vendorId}`);
+            const estimatedPrice = document.getElementById(`estimated-price-${vendorId}`);
+            
+            if (distanceDisplay) {
+                distanceDisplay.textContent = `${distance.toFixed(2)} km`;
+            }
+            if (distanceInput) {
+                distanceInput.value = distance.toFixed(2);
+            }
+            if (estimatedPrice && currentPricePerKm > 0) {
+                var price = distance * currentPricePerKm;
+                estimatedPrice.textContent = `₹${price.toFixed(2)}`;
+            }
+        }
+    }
+
+    // Initialize location search when the form is shown
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-items-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const itemsDiv = document.querySelector(target);
+                const vendorId = this.getAttribute('data-vendor-id');
+                
+                if (itemsDiv && itemsDiv.classList.contains('show') && vendorId) {
+                    // Initialize map for this vendor
+                    initializeMap(vendorId);
+                    
+                    // Setup event listeners for location search
+                    const pickupInput = document.getElementById(`pickup-search-${vendorId}`);
+                    const dropoffInput = document.getElementById(`dropoff-search-${vendorId}`);
+                    const pickupSuggestions = document.getElementById(`pickup-suggestions-${vendorId}`);
+                    const dropoffSuggestions = document.getElementById(`dropoff-suggestions-${vendorId}`);
+                    
+                    if (pickupInput && pickupSuggestions) {
+                        pickupInput.addEventListener('input', () => showSuggestions(pickupInput, pickupSuggestions, vendorId));
+                    }
+                    
+                    if (dropoffInput && dropoffSuggestions) {
+                        dropoffInput.addEventListener('input', () => showSuggestions(dropoffInput, dropoffSuggestions, vendorId));
+                    }
+
+                    // Close suggestions when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (pickupInput && !pickupInput.contains(e.target) && pickupSuggestions && !pickupSuggestions.contains(e.target)) {
+                            pickupSuggestions.style.display = 'none';
+                        }
+                        if (dropoffInput && !dropoffInput.contains(e.target) && dropoffSuggestions && !dropoffSuggestions.contains(e.target)) {
+                            dropoffSuggestions.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Add this script for map functionality -->
+<script>
+    // Initialize map and variables
+    var map = null;
+    var pickupMarker = null;
+    var dropoffMarker = null;
+    var geocoder = null;
+    var currentPricePerKm = 0;
+
+    // Function to initialize map
+    function initializeMap() {
+        if (!map) {
+            map = L.map('booking-map').setView([20.5937, 78.9629], 5); // Center on India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            geocoder = L.Control.Geocoder.nominatim();
+        }
+    }
+
+    // Function to setup location search
+    function setupLocationSearch(inputId, markerVar, coordsId, latFieldId, lngFieldId) {
+        var input = document.getElementById(inputId);
+        var coordsDiv = document.getElementById(coordsId);
+        var latField = document.getElementById(latFieldId);
+        var lngField = document.getElementById(lngFieldId);
+
+        input.addEventListener('change', function() {
+            geocoder.geocode(input.value, function(results) {
+                if (results && results.length > 0) {
+                    var result = results[0];
+                    var latlng = result.center;
+                    
+                    // Update coordinates display
+                    coordsDiv.textContent = `Lat: ${latlng.lat.toFixed(6)}, Lng: ${latlng.lng.toFixed(6)}`;
+                    
+                    // Update hidden fields
+                    latField.value = latlng.lat;
+                    lngField.value = latlng.lng;
+                    
+                    // Update or create marker
+                    if (markerVar) {
+                        markerVar.setLatLng(latlng);
+                    } else {
+                        markerVar = L.marker(latlng).addTo(map);
+                    }
+                    
+                    // Center map on the location
+                    map.setView(latlng, 13);
+                    
+                    // Calculate distance if both locations are set
+                    calculateDistance();
+                }
+            });
+        });
+    }
+
+    // Function to calculate distance
+    function calculateDistance() {
+        if (pickupMarker && dropoffMarker) {
+            var pickupLatLng = pickupMarker.getLatLng();
+            var dropoffLatLng = dropoffMarker.getLatLng();
+            
+            // Calculate distance in kilometers using Haversine formula
+            var R = 6371; // Earth's radius in km
+            var dLat = (dropoffLatLng.lat - pickupLatLng.lat) * Math.PI / 180;
+            var dLon = (dropoffLatLng.lng - pickupLatLng.lng) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(pickupLatLng.lat * Math.PI / 180) * Math.cos(dropoffLatLng.lat * Math.PI / 180) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            var distance = R * c;
+            
+            // Update distance display
+            document.getElementById('distance').textContent = distance.toFixed(2);
+            
+            // Calculate and update estimated price
+            if (currentPricePerKm > 0) {
+                var estimatedPrice = distance * currentPricePerKm;
+                document.getElementById('estimated-price').textContent = estimatedPrice.toFixed(2);
+            }
+        }
+    }
+
+    // Initialize map and location search when the form is shown
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-items-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const itemsDiv = document.querySelector(target);
+                
+                if (itemsDiv.classList.contains('show')) {
+                    // Initialize map and location search when the form is shown
+                    initializeMap();
+                    setupLocationSearch('pickup-search', pickupMarker, 'pickup-coords', 'pickup_latitude', 'pickup_longitude');
+                    setupLocationSearch('dropoff-search', dropoffMarker, 'dropoff-coords', 'dropoff_latitude', 'dropoff_longitude');
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Simple Map Script -->
+<script>
+    var map = L.map('booking-map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var geocoder = L.Control.Geocoder.nominatim();
+    var pickupMarker = null;
+    var dropoffMarker = null;
+    var searchTimeout = null;
+
+    function showSuggestions(input, suggestionsDiv) {
+        const query = input.value.trim();
+        if (query.length < 3) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        // Clear previous timeout
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        // Set new timeout
+        searchTimeout = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                .then(response => response.json())
+                .then(results => {
+                    if (results && results.length > 0) {
+                        suggestionsDiv.innerHTML = '';
+                        results.forEach(result => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            div.textContent = result.display_name;
+                            div.onclick = function() {
+                                input.value = result.display_name;
+                                suggestionsDiv.style.display = 'none';
+                                
+                                // Set coordinates
+                                const latField = input.id === 'pickup-search' ? 
+                                    document.getElementById('pickup_latitude') : 
+                                    document.getElementById('dropoff_latitude');
+                                const lngField = input.id === 'pickup-search' ? 
+                                    document.getElementById('pickup_longitude') : 
+                                    document.getElementById('dropoff_longitude');
+                                
+                                latField.value = result.lat;
+                                lngField.value = result.lon;
+                            };
+                            suggestionsDiv.appendChild(div);
+                        });
+                        suggestionsDiv.style.display = 'block';
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    suggestionsDiv.style.display = 'none';
+                });
+        }, 500); // Wait 500ms after typing stops
+    }
+
+    // Initialize location search when the form is shown
+    document.querySelectorAll('.toggle-items-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const target = this.getAttribute('data-target');
+            const itemsDiv = document.querySelector(target);
+            
+            if (itemsDiv.classList.contains('show')) {
+                const pickupInput = document.getElementById('pickup-search');
+                const dropoffInput = document.getElementById('dropoff-search');
+                const pickupSuggestions = document.getElementById('pickup-suggestions');
+                const dropoffSuggestions = document.getElementById('dropoff-suggestions');
+
+                pickupInput.addEventListener('input', function() {
+                    showSuggestions(this, pickupSuggestions);
+                });
+
+                dropoffInput.addEventListener('input', function() {
+                    showSuggestions(this, dropoffSuggestions);
+                });
+
+                // Close suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!pickupInput.contains(e.target) && !pickupSuggestions.contains(e.target)) {
+                        pickupSuggestions.style.display = 'none';
+                    }
+                    if (!dropoffInput.contains(e.target) && !dropoffSuggestions.contains(e.target)) {
+                        dropoffSuggestions.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupInput = document.getElementById('pickup-search');
+    const dropoffInput = document.getElementById('dropoff-search');
+    const pickupSuggestions = document.getElementById('pickup-suggestions');
+    const dropoffSuggestions = document.getElementById('dropoff-suggestions');
+    const distanceDisplay = document.getElementById('distance-display');
+    const distanceKmInput = document.getElementById('distance_km');
+    let searchTimeout;
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in kilometers
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function updateDistance() {
+        const pickupLat = parseFloat(document.getElementById('pickup_latitude').value);
+        const pickupLon = parseFloat(document.getElementById('pickup_longitude').value);
+        const dropoffLat = parseFloat(document.getElementById('dropoff_latitude').value);
+        const dropoffLon = parseFloat(document.getElementById('dropoff_longitude').value);
+
+        if (!isNaN(pickupLat) && !isNaN(pickupLon) && !isNaN(dropoffLat) && !isNaN(dropoffLon)) {
+            const distance = calculateDistance(pickupLat, pickupLon, dropoffLat, dropoffLon);
+            distanceDisplay.textContent = `${distance.toFixed(2)} km`;
+            distanceKmInput.value = distance.toFixed(2);
+        } else {
+            distanceDisplay.textContent = '-';
+            distanceKmInput.value = '';
+        }
+    }
+
+    function getLocationDetails(result) {
+        const parts = result.display_name.split(',');
+        const street = parts[0].trim();
+        const city = parts[1] ? parts[1].trim() : '';
+        let pincode = '';
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i].trim();
+            if (/^\d{6}$/.test(part)) {
+                pincode = part;
+                break;
+            }
+        }
+        
+        return {
+            display: `${street}, ${city}${pincode ? ' - ' + pincode : ''}`,
+            street: street,
+            city: city,
+            pincode: pincode
+        };
+    }
+
+    function searchLocations(query, suggestionsDiv, vendorId) {
+        if (query.length < 3) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+            .then(response => response.json())
+            .then(results => {
+                suggestionsDiv.innerHTML = '';
+                results.forEach(result => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    
+                    const locationDetails = getLocationDetails(result);
+                    div.innerHTML = `
+                        <div>${locationDetails.street}</div>
+                        <div class="location-details">${locationDetails.city}${locationDetails.pincode ? ' - ' + locationDetails.pincode : ''}</div>
+                    `;
+                    
+                    div.onclick = function() {
+                        const isPickup = suggestionsDiv.id.includes('pickup');
+                        const input = isPickup ? 
+                            document.getElementById(`pickup-search-${vendorId}`) : 
+                            document.getElementById(`dropoff-search-${vendorId}`);
+                        const latField = isPickup ? 
+                            document.getElementById(`pickup_latitude-${vendorId}`) : 
+                            document.getElementById(`dropoff_latitude-${vendorId}`);
+                        const lngField = isPickup ? 
+                            document.getElementById(`pickup_longitude-${vendorId}`) : 
+                            document.getElementById(`dropoff_longitude-${vendorId}`);
+                        const locationField = isPickup ?
+                            document.getElementById(`pickup_location-${vendorId}`) :
+                            document.getElementById(`dropoff_location-${vendorId}`);
+
+                        input.value = locationDetails.display;
+                        latField.value = result.lat;
+                        lngField.value = result.lon;
+                        locationField.value = locationDetails.display;
+                        suggestionsDiv.style.display = 'none';
+                        
+                        // Update marker and map
+                        const latlng = L.latLng(result.lat, result.lon);
+                        const marker = isPickup ? pickupMarkers[vendorId] : dropoffMarkers[vendorId];
+                        
+                        if (marker) {
+                            marker.setLatLng(latlng);
+                        } else {
+                            const newMarker = L.marker(latlng).addTo(maps[vendorId]);
+                            if (isPickup) {
+                                pickupMarkers[vendorId] = newMarker;
+                            } else {
+                                dropoffMarkers[vendorId] = newMarker;
+                            }
+                        }
+                        
+                        maps[vendorId].setView(latlng, 13);
+                        calculateDistance(vendorId);
+                    };
+                    suggestionsDiv.appendChild(div);
+                });
+                suggestionsDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                suggestionsDiv.style.display = 'none';
+            });
+    }
+
+    function handleInput(input, suggestionsDiv) {
+        const vendorId = input.id.split('-')[2];
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchLocations(input.value, suggestionsDiv, vendorId);
+        }, 500);
+    }
+
+    pickupInput.addEventListener('input', () => handleInput(pickupInput, pickupSuggestions));
+    dropoffInput.addEventListener('input', () => handleInput(dropoffInput, dropoffSuggestions));
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!pickupInput.contains(e.target) && !pickupSuggestions.contains(e.target)) {
+            pickupSuggestions.style.display = 'none';
+        }
+        if (!dropoffInput.contains(e.target) && !dropoffSuggestions.contains(e.target)) {
+            dropoffSuggestions.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<!-- Consolidated Map Script -->
+<script>
+    // Initialize map and variables
+    var maps = {}; // Store maps for each vendor
+    var pickupMarkers = {}; // Store pickup markers for each vendor
+    var dropoffMarkers = {}; // Store dropoff markers for each vendor
+    var currentPricePerKm = 0;
+    var searchTimeout = null;
+
+    // Function to initialize map for a specific vendor
+    function initializeMap(vendorId) {
+        if (!maps[vendorId]) {
+            const mapElement = document.getElementById(`booking-map-${vendorId}`);
+            if (!mapElement) return;
+
+            maps[vendorId] = L.map(mapElement).setView([20.5937, 78.9629], 5); // Center on India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(maps[vendorId]);
+        }
+        return maps[vendorId];
+    }
+
+    function getLocationDetails(result) {
+        const parts = result.display_name.split(',');
+        const street = parts[0].trim();
+        const city = parts[1] ? parts[1].trim() : '';
+        let pincode = '';
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i].trim();
+            if (/^\d{6}$/.test(part)) {
+                pincode = part;
+                break;
+            }
+        }
+        
+        return {
+            display: `${street}, ${city}${pincode ? ' - ' + pincode : ''}`,
+            street: street,
+            city: city,
+            pincode: pincode
+        };
+    }
+
+    function showSuggestions(input, suggestionsDiv, vendorId) {
+        const query = input.value.trim();
+        if (query.length < 3) {
+            suggestionsDiv.style.display = 'none';
+            return;
+        }
+
+        // Clear previous timeout
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        // Set new timeout
+        searchTimeout = setTimeout(() => {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                .then(response => response.json())
+                .then(results => {
+                    if (results && results.length > 0) {
+                        suggestionsDiv.innerHTML = '';
+                        results.forEach(result => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            
+                            const locationDetails = getLocationDetails(result);
+                            div.innerHTML = `
+                                <div>${locationDetails.street}</div>
+                                <div class="location-details">${locationDetails.city}${locationDetails.pincode ? ' - ' + locationDetails.pincode : ''}</div>
+                            `;
+                            
+                            div.onclick = function() {
+                                input.value = locationDetails.display;
+                                suggestionsDiv.style.display = 'none';
+                                
+                                // Set coordinates
+                                const isPickup = input.id === `pickup-search-${vendorId}`;
+                                const latField = isPickup ? 
+                                    document.getElementById(`pickup_latitude-${vendorId}`) : 
+                                    document.getElementById(`dropoff_latitude-${vendorId}`);
+                                const lngField = isPickup ? 
+                                    document.getElementById(`pickup_longitude-${vendorId}`) : 
+                                    document.getElementById(`dropoff_longitude-${vendorId}`);
+                                const locationField = isPickup ?
+                                    document.getElementById(`pickup_location-${vendorId}`) :
+                                    document.getElementById(`dropoff_location-${vendorId}`);
+                                
+                                if (latField && lngField && locationField) {
+                                    latField.value = result.lat;
+                                    lngField.value = result.lon;
+                                    locationField.value = locationDetails.display;
+
+                                    // Update marker and map
+                                    const latlng = L.latLng(result.lat, result.lon);
+                                    const marker = isPickup ? 
+                                        pickupMarkers[vendorId] : dropoffMarkers[vendorId];
+                                    
+                                    if (marker) {
+                                        marker.setLatLng(latlng);
+                                    } else {
+                                        const newMarker = L.marker(latlng).addTo(maps[vendorId]);
+                                        if (isPickup) {
+                                            pickupMarkers[vendorId] = newMarker;
+                                        } else {
+                                            dropoffMarkers[vendorId] = newMarker;
+                                        }
+                                    }
+                                    
+                                    maps[vendorId].setView(latlng, 13);
+                                    calculateDistance(vendorId);
+                                }
+                            };
+                            suggestionsDiv.appendChild(div);
+                        });
+                        suggestionsDiv.style.display = 'block';
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    suggestionsDiv.style.display = 'none';
+                });
+        }, 500); // Wait 500ms after typing stops
+    }
+
+    // Function to calculate distance for a specific vendor
+    function calculateDistance(vendorId) {
+        if (pickupMarkers[vendorId] && dropoffMarkers[vendorId]) {
+            var pickupLatLng = pickupMarkers[vendorId].getLatLng();
+            var dropoffLatLng = dropoffMarkers[vendorId].getLatLng();
+            
+            // Calculate distance in kilometers using Haversine formula
+            var R = 6371; // Earth's radius in km
+            var dLat = (dropoffLatLng.lat - pickupLatLng.lat) * Math.PI / 180;
+            var dLon = (dropoffLatLng.lng - pickupLatLng.lng) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(pickupLatLng.lat * Math.PI / 180) * Math.cos(dropoffLatLng.lat * Math.PI / 180) * 
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            var distance = R * c;
+            
+            // Update distance display
+            const distanceDisplay = document.getElementById(`distance-display-${vendorId}`);
+            const distanceInput = document.getElementById(`distance_km-${vendorId}`);
+            const estimatedPrice = document.getElementById(`estimated-price-${vendorId}`);
+            
+            if (distanceDisplay) {
+                distanceDisplay.textContent = `${distance.toFixed(2)} km`;
+            }
+            if (distanceInput) {
+                distanceInput.value = distance.toFixed(2);
+            }
+            if (estimatedPrice && currentPricePerKm > 0) {
+                var price = distance * currentPricePerKm;
+                estimatedPrice.textContent = `₹${price.toFixed(2)}`;
+            }
+        }
+    }
+
+    // Initialize location search when the form is shown
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-items-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const itemsDiv = document.querySelector(target);
+                const vendorId = this.getAttribute('data-vendor-id');
+                
+                if (itemsDiv && itemsDiv.classList.contains('show') && vendorId) {
+                    // Initialize map for this vendor
+                    initializeMap(vendorId);
+                    
+                    // Setup event listeners for location search
+                    const pickupInput = document.getElementById(`pickup-search-${vendorId}`);
+                    const dropoffInput = document.getElementById(`dropoff-search-${vendorId}`);
+                    const pickupSuggestions = document.getElementById(`pickup-suggestions-${vendorId}`);
+                    const dropoffSuggestions = document.getElementById(`dropoff-suggestions-${vendorId}`);
+                    
+                    if (pickupInput && pickupSuggestions) {
+                        pickupInput.addEventListener('input', () => showSuggestions(pickupInput, pickupSuggestions, vendorId));
+                    }
+                    
+                    if (dropoffInput && dropoffSuggestions) {
+                        dropoffInput.addEventListener('input', () => showSuggestions(dropoffInput, dropoffSuggestions, vendorId));
+                    }
+
+                    // Close suggestions when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (pickupInput && !pickupInput.contains(e.target) && pickupSuggestions && !pickupSuggestions.contains(e.target)) {
+                            pickupSuggestions.style.display = 'none';
+                        }
+                        if (dropoffInput && !dropoffInput.contains(e.target) && dropoffSuggestions && !dropoffSuggestions.contains(e.target)) {
+                            dropoffSuggestions.style.display = 'none';
+                        }
+                    });
+                }
+            });
+    });
+});
+</script>
+
+<!-- Add this at the end of the file, before the closing body tag -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+    // Function to handle payment method selection
+    function handlePaymentMethod(vendorId) {
+        const upiDetails = document.getElementById(`upi_details_${vendorId}`);
+        const upiRadio = document.getElementById(`upi_${vendorId}`);
+        
+        if (upiRadio.checked) {
+            upiDetails.style.display = 'block';
+            // Set the amount from the total
+            const totalAmount = document.getElementById('total-amount').innerText;
+            document.getElementById(`upi_amount_${vendorId}`).value = totalAmount;
+        } else {
+            upiDetails.style.display = 'none';
+        }
+    }
+
+    // Function to start QR scanner
+    function startScanner(vendorId) {
+        const scanner = new Html5QrcodeScanner(`qr_scanner_${vendorId}`, {
+            fps: 10,
+            qrbox: 250
+        });
+
+        scanner.render((decodedText) => {
+            // Handle the scanned UPI ID
+            if (decodedText.startsWith('upi://pay?pa=')) {
+                const upiId = decodedText.split('pa=')[1].split('&')[0];
+                scanner.clear();
+                document.getElementById(`qr_scanner_${vendorId}`).innerHTML = '';
+            } else {
+                alert('Invalid UPI QR code. Please scan a valid UPI payment QR code.');
+            }
+        });
+    }
+
+    // Add event listeners for payment method radio buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+        paymentRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const vendorId = this.id.split('_')[1];
+                handlePaymentMethod(vendorId);
+            });
+        });
+    });
+</script>
+
+<script>
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle UPI QR code display
+    const upiRadios = document.querySelectorAll('input[type="radio"][value="upi"]');
+    upiRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const vendorId = this.id.split('_')[1];
+            const qrCode = document.getElementById(`upi_qr_${vendorId}`);
+            
+            // Hide all QR codes first
+            document.querySelectorAll('[id^="upi_qr_"]').forEach(el => el.style.display = 'none');
+            
+            // Show the selected vendor's QR code if UPI is selected
+            if (this.checked) {
+                qrCode.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const upiRadio = document.getElementById('upi');
+    const upiQrCode = document.getElementById('upi-qr-code');
+    
+    upiRadio.addEventListener('change', function() {
+        if (this.checked) {
+            upiQrCode.style.display = 'block';
+        } else {
+            upiQrCode.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const upiRadios = document.querySelectorAll('input[id^="upi_"]');
+    
+    upiRadios.forEach(radio => {
+        const vendorId = radio.id.split('_')[1];
+        const upiQrCode = document.getElementById(`upi-qr-code-${vendorId}`);
+        
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                upiQrCode.style.display = 'block';
+            } else {
+                upiQrCode.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const upiRadios = document.querySelectorAll('input[id^="upi_"]');
+    
+    upiRadios.forEach(radio => {
+        const vendorId = radio.id.split('_')[1];
+        const upiDetails = document.getElementById(`upi_details_${vendorId}`);
+        
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                upiDetails.style.display = 'block';
+            } else {
+                upiDetails.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle grocery UPI radios
+    const upiRadios = document.querySelectorAll('input[id^="upi_"]');
+    upiRadios.forEach(radio => {
+        const vendorId = radio.id.split('_')[1];
+        const upiDetails = document.getElementById(`upi_details_${vendorId}`);
+        if (upiDetails) {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    upiDetails.style.display = 'block';
+                } else {
+                    upiDetails.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Handle service-based UPI radios
+    const serviceUpiRadios = document.querySelectorAll('input[id^="upi_service_"]');
+    serviceUpiRadios.forEach(radio => {
+        const vendorId = radio.id.split('_')[2];
+        const upiDetails = document.getElementById(`upi_details_service_${vendorId}`);
+        if (upiDetails) {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    upiDetails.style.display = 'block';
+                } else {
+                    upiDetails.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Handle ride service UPI radios
+    const rideUpiRadios = document.querySelectorAll('input[id^="upi_ride_"]');
+    rideUpiRadios.forEach(radio => {
+        const vendorId = radio.id.split('_')[2];
+        const upiDetails = document.getElementById(`upi_details_ride_${vendorId}`);
+        if (upiDetails) {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    upiDetails.style.display = 'block';
+                } else {
+                    upiDetails.style.display = 'none';
+                }
+            });
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const quantityInputs = document.querySelectorAll(".quantity-input");
+    const totalAmountElement = document.getElementById("total-amount");
+
+    function updateItemCost(input) {
+        const price = parseFloat(input.getAttribute("data-price")) || 0;
+        const quantity = parseInt(input.value) || 0;
+        const costId = input.getAttribute("data-cost-id");
+        const cost = price * quantity;
+        
+        // Update individual item cost
+        const costElement = document.getElementById(costId);
+        if (costElement) {
+            costElement.textContent = `₹${cost.toFixed(2)}`;
+        }
+        
+        return cost;
+    }
+
+    function updateTotalAmount() {
+        let total = 0;
+        quantityInputs.forEach(input => {
+            const price = parseFloat(input.getAttribute("data-price")) || 0;
+            const quantity = parseInt(input.value) || 0;
+            total += price * quantity;
+        });
+        
+        // Update total amount display with ₹ symbol
+        if (totalAmountElement) {
+            totalAmountElement.textContent = `₹${total.toFixed(2)}`;
+        }
+    }
+
+    function handleQuantityChange(input) {
+        const maxStock = parseInt(input.getAttribute("max"));
+        let quantity = parseInt(input.value) || 0;
+
+        // Validate quantity
+        if (quantity > maxStock) {
+            quantity = maxStock;
+            input.value = maxStock;
+            showMessage(input, `Only ${maxStock} items available in stock.`, 'warning');
+        } else if (quantity < 0) {
+            quantity = 0;
+            input.value = 0;
+            showMessage(input, 'Quantity cannot be negative.', 'warning');
+        }
+
+        // Update costs and total
+        updateItemCost(input);
+        updateTotalAmount();
+    }
+
+    // Add event listeners to quantity inputs
+    quantityInputs.forEach(input => {
+        input.addEventListener("input", function() {
+            handleQuantityChange(this);
+        });
+        
+        input.addEventListener("change", function() {
+            handleQuantityChange(this);
+        });
+    });
+
+    function showMessage(element, message, type) {
+        // Remove any existing messages
+        const existingMessage = element.parentElement.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create new message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message alert alert-${type} mt-2`;
+        messageDiv.style.fontSize = '12px';
+        messageDiv.textContent = message;
+
+        // Add message after the input
+        element.parentElement.appendChild(messageDiv);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+
+    // Calculate initial total
+    updateTotalAmount();
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Function to update costs for a specific vendor
+    function updateVendorTotals(vendorId) {
+        const vendorSection = document.getElementById(`addItemForm_${vendorId}`);
+        if (!vendorSection) return;
+
+        const quantityInputs = vendorSection.querySelectorAll(".quantity-input");
+        const totalAmountElement = document.getElementById(`total-amount-${vendorId}`);
+        
+        let total = 0;
+        quantityInputs.forEach(input => {
+            const price = parseFloat(input.getAttribute("data-price")) || 0;
+            const quantity = parseInt(input.value) || 0;
+            const costId = input.getAttribute("data-cost-id");
+            const cost = price * quantity;
+            
+            // Update individual item cost
+            const costElement = document.getElementById(costId);
+            if (costElement) {
+                costElement.textContent = `₹${cost.toFixed(2)}`;
+            }
+            
+            total += cost;
+        });
+        
+        // Update total amount display with ₹ symbol
+        if (totalAmountElement) {
+            totalAmountElement.textContent = `₹${total.toFixed(2)}`;
+        }
+    }
+
+    // Add event listeners to all quantity inputs
+    document.querySelectorAll(".quantity-input").forEach(input => {
+        input.addEventListener("input", function() {
+            const vendorId = this.closest("form").getAttribute("action").split("/").slice(-1)[0];
+            handleQuantityChange(this, vendorId);
+        });
+        
+        input.addEventListener("change", function() {
+            const vendorId = this.closest("form").getAttribute("action").split("/").slice(-1)[0];
+            handleQuantityChange(this, vendorId);
+        });
+    });
+
+    function handleQuantityChange(input, vendorId) {
+        const maxStock = parseInt(input.getAttribute("max"));
+        let quantity = parseInt(input.value) || 0;
+
+        // Validate quantity
+        if (quantity > maxStock) {
+            quantity = maxStock;
+            input.value = maxStock;
+            showMessage(input, `Only ${maxStock} items available in stock.`, 'warning');
+        } else if (quantity < 0) {
+            quantity = 0;
+            input.value = 0;
+            showMessage(input, 'Quantity cannot be negative.', 'warning');
+        }
+
+        // Update vendor totals
+        updateVendorTotals(vendorId);
+    }
+
+    function showMessage(element, message, type) {
+        // Remove any existing messages
+        const existingMessage = element.parentElement.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create new message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message alert alert-${type} mt-2`;
+        messageDiv.style.fontSize = '12px';
+        messageDiv.textContent = message;
+
+        // Add message after the input
+        element.parentElement.appendChild(messageDiv);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+
+    // Initialize all vendor totals
+    document.querySelectorAll("[id^='addItemForm_']").forEach(form => {
+        const vendorId = form.id.split("_")[1];
+        updateVendorTotals(vendorId);
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Function to update costs for a specific vendor section
+    function updateVendorTotals(vendorSection) {
+        if (!vendorSection) return;
+
+        const quantityInputs = vendorSection.querySelectorAll(".quantity-input");
+        const totalAmountElement = vendorSection.querySelector("h5 span");
+        
+        let total = 0;
+        quantityInputs.forEach(input => {
+            const price = parseFloat(input.getAttribute("data-price")) || 0;
+            const quantity = parseInt(input.value) || 0;
+            const costId = input.getAttribute("data-cost-id");
+            const cost = price * quantity;
+            
+            // Update individual item cost
+            const costElement = document.getElementById(costId);
+            if (costElement) {
+                costElement.textContent = `₹${cost.toFixed(2)}`;
+            }
+            
+            total += cost;
+        });
+        
+        // Update total amount display with ₹ symbol
+        if (totalAmountElement) {
+            totalAmountElement.textContent = `₹${total.toFixed(2)}`;
+        }
+    }
+
+    // Add event listeners to all quantity inputs
+    document.querySelectorAll(".quantity-input").forEach(input => {
+        input.addEventListener("input", function() {
+            handleQuantityChange(this);
+        });
+        
+        input.addEventListener("change", function() {
+            handleQuantityChange(this);
+        });
+    });
+
+    function handleQuantityChange(input) {
+        const maxStock = parseInt(input.getAttribute("max"));
+        let quantity = parseInt(input.value) || 0;
+
+        // Validate quantity
+        if (quantity > maxStock) {
+            quantity = maxStock;
+            input.value = maxStock;
+            showMessage(input, `Only ${maxStock} items available in stock.`, 'warning');
+        } else if (quantity < 0) {
+            quantity = 0;
+            input.value = 0;
+            showMessage(input, 'Quantity cannot be negative.', 'warning');
+        }
+
+        // Find the vendor section containing this input
+        const vendorSection = input.closest(".vendor-items");
+        updateVendorTotals(vendorSection);
+    }
+
+    function showMessage(element, message, type) {
+        // Remove any existing messages
+        const existingMessage = element.parentElement.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create new message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message alert alert-${type} mt-2`;
+        messageDiv.style.fontSize = '12px';
+        messageDiv.textContent = message;
+
+        // Add message after the input
+        element.parentElement.appendChild(messageDiv);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+
+    // Initialize all vendor totals
+    document.querySelectorAll(".vendor-items").forEach(section => {
+        updateVendorTotals(section);
+    });
+
+    // Add event listeners for the "View Items for Ordering" buttons
+    document.querySelectorAll(".toggle-items-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const targetId = this.getAttribute("data-target");
+            const vendorSection = document.querySelector(targetId);
+            if (vendorSection) {
+                // Update totals when section is opened
+                setTimeout(() => {
+                    updateVendorTotals(vendorSection);
+                }, 100);
+            }
+        });
+    });
+});
+</script>
+
+<!-- Add this before the closing body tag -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const serviceRadios = document.querySelectorAll('.service-radio');
+    serviceRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const price = Number(this.dataset.price);
+            updatePricePerKm(price);
+        });
+    });
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Existing event listeners...
+
+        // Add form submission handler
+        document.querySelectorAll('form[action^="/book_item"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check if service type is selected
+                let serviceType = this.querySelector('input[name="service_type"]:checked');
+                let errorMsg = this.querySelector("#service-error");
+                
+                if (!serviceType) {
+                    if (errorMsg) {
+                        errorMsg.style.display = "block";
+                    }
+                    return false;
+                }
+                
+                // If service type is home delivery, ensure address is provided
+                if (serviceType.value === 'home_delivery') {
+                    let addressInput = this.querySelector('input[name="address"]');
+                    if (!addressInput.value.trim()) {
+                        // Try to get customer's current location
+                        addressInput.value = '{{ customerinfo.location_name }}' || '';
+                    }
+                }
+                
+                // Submit the form
+                this.submit();
+            });
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

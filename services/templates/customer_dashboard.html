@@ -1,0 +1,187 @@
+ 
+<script>
+// Notification system for customers
+function setupCustomerNotifications() {
+    // Check for notification permission
+    if (Notification.permission !== 'granted') {
+        Notification.requestPermission();
+    }
+
+    // WebSocket connection for real-time notifications
+    const socket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/customer_notifications/' + customerId + '/'
+    );
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        
+        // Handle order status update notification
+        if (data.type === 'status_update') {
+            showNotification('Order Update', {
+                body: `Order #${data.order_id} has been ${data.status}`,
+                icon: '/static/images/notification-icon.png',
+                tag: `order-${data.order_id}`,
+                data: { orderId: data.order_id }
+            });
+            
+            // Update order status in UI
+            updateOrderStatus(data.order_id, data.status);
+            
+            // Show toast notification
+            showToast('Order Update', `Order #${data.order_id} has been ${data.status}`, 'info');
+            
+            // Play notification sound
+            playNotificationSound();
+        }
+    };
+
+    socket.onclose = function(e) {
+        console.log('WebSocket connection closed, attempting to reconnect...');
+        setTimeout(setupCustomerNotifications, 1000);
+    };
+}
+
+function showNotification(title, options) {
+    if (Notification.permission === 'granted') {
+        const notification = new Notification(title, options);
+        notification.onclick = function(event) {
+            event.preventDefault();
+            window.focus();
+            if (options.data && options.data.orderId) {
+                showOrderDetails(options.data.orderId);
+            }
+        };
+    }
+}
+
+function updateOrderStatus(orderId, status) {
+    const orderElement = document.querySelector(`[data-order-id="${orderId}"]`);
+    if (orderElement) {
+        const statusBadge = orderElement.querySelector('.status-badge');
+        if (statusBadge) {
+            statusBadge.textContent = status;
+            statusBadge.className = `status-badge badge ${getStatusBadgeClass(status)}`;
+        }
+        
+        // Add animation to highlight the update
+        orderElement.classList.add('status-updated');
+        setTimeout(() => orderElement.classList.remove('status-updated'), 2000);
+    }
+}
+
+function getStatusBadgeClass(status) {
+    const statusClasses = {
+        'pending': 'bg-warning',
+        'accepted': 'bg-success',
+        'processing': 'bg-info',
+        'completed': 'bg-primary',
+        'cancelled': 'bg-danger'
+    };
+    return statusClasses[status.toLowerCase()] || 'bg-secondary';
+}
+
+function playNotificationSound() {
+    const audio = new Audio('/static/sounds/notification.mp3');
+    audio.play().catch(error => console.log('Error playing notification sound:', error));
+}
+
+// Toast notification system
+function showToast(title, message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = `toast ${type} show`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <i class="fas fa-${getToastIcon(type)} me-2"></i>
+            <strong class="me-auto">${title}</strong>
+            <button type="button" class="btn-close" onclick="this.closest('.toast').remove()"></button>
+        </div>
+        <div class="toast-body">${message}</div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+    document.body.appendChild(container);
+    return container;
+}
+
+function getToastIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'times-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Add styles
+const style = document.createElement('style');
+style.textContent = `
+    .toast-container {
+        z-index: 1050;
+    }
+    
+    .toast {
+        min-width: 300px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    }
+    
+    .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    .toast.success { border-left: 4px solid #28a745; }
+    .toast.error { border-left: 4px solid #dc3545; }
+    .toast.warning { border-left: 4px solid #ffc107; }
+    .toast.info { border-left: 4px solid #17a2b8; }
+    
+    .status-updated {
+        animation: highlight 2s ease;
+    }
+    
+    @keyframes highlight {
+        0% { background-color: rgba(255, 255, 0, 0.2); }
+        100% { background-color: transparent; }
+    }
+    
+    .order-item {
+        transition: background-color 0.3s ease;
+    }
+`;
+document.head.appendChild(style);
+
+// Initialize notifications when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setupCustomerNotifications();
+    
+    // Add service type validation
+    const serviceTypeForm = document.querySelector('form');
+    if (serviceTypeForm) {
+        serviceTypeForm.addEventListener('submit', function(e) {
+            const serviceType = document.querySelector('input[name="service_type"]:checked');
+            if (!serviceType) {
+                e.preventDefault();
+                showToast('Warning', 'Please select a service type before proceeding', 'warning');
+                document.querySelector('.service-type-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+});
+</script> 

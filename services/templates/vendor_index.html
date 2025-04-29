@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Customer Dash</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/media/assets1/css" href="/media/assets1/js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<style>
+  
+  .my-details {
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      color: #007bff; /* A more vibrant blue */
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+  }
+
+  .my-details:hover {
+      color: white;
+      background-color: #007bff;
+  }
+
+  /* Ensuring dropdown menu is scrollable */
+  .dropdown-menu {
+      max-height: 300px; /* Restrict height */
+      overflow-y: auto;  /* Enable vertical scrolling */
+      width: 450px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Customer details section with enforced scrollability */
+  .customer-info {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 5px;
+      max-height: 150px; /* Ensure scrollability */
+      overflow-y: auto;
+  }
+
+  /* Star rating design */
+  .star-rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: start;
+      font-size: 2rem;
+      margin-bottom: -10px; /* Reduce space below stars */
+  }
+
+  .star-rating input {
+      display: none;
+  }
+
+  .star-rating label {
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-right: 5px; /* Reduce spacing between stars */
+  }
+
+  .star-rating input:checked ~ label {
+      color: gold;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+      color: gold;
+  }
+
+  /* Toggle Button */
+  .toggle-info-btn {
+      display: block;
+      margin-top: 10px;
+      background: #ffbf00;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+  }
+
+  .toggle-info-btn:hover {
+      background: #d4a000;
+      text-decoration: none;
+  }
+
+  /* Location text formatting */
+  .location-text {
+      display: block;
+      max-width: 300px; /* Adjust as needed */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap; /* Preserves line breaks */
+      line-height: 1.5; /* Increases readability */
+  }
+
+  /* Enhanced Notification UI */
+  .notification-dropdown {
+    max-height: 400px;
+    overflow-y: auto;
+    width: 320px;
+    padding: 0;
+  }
+
+  .notification-dropdown .dropdown-header {
+    background-color: #5B63FE;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    border-radius: 5px 5px 0 0;
+  }
+
+  .notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s;
+  }
+
+  .notification-item:hover {
+    background-color: #f8f9ff;
+  }
+  
+  .notification-item.unread {
+    background-color: rgba(91, 99, 254, 0.05);
+    border-left: 3px solid #5B63FE;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+  }
+
+  .notification-content h6 {
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .notification-time {
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .view-all-link {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8f9ff;
+    color: #5B63FE;
+    font-weight: 600;
+    transition: all 0.3s;
+    border-radius: 0 0 5px 5px;
+  }
+
+  .view-all-link:hover {
+    background-color: #5B63FE;
+    color: white;
+    text-decoration: none;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 6px;
+    border-radius: 50%;
+    background-color: #FF5757;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  /* Notification sidebar styles */
+  .notification-avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+
+  .notification-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .notification-header {
+    background-color: #f8f9fa;
+  }
+
+  .notification-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .notification-item {
+    border: 1px solid #f1f1f1;
+    transition: all 0.2s ease;
+  }
+
+  .notification-item:hover {
+    background-color: rgba(91, 99, 254, 0.05);
+    transform: translateY(-2px);
+  }
+
+  .unread-notification {
+    background-color: rgba(91, 99, 254, 0.05);
+    border-left: 3px solid #5B63FE;
+  }
+
+  .empty-icon {
+    font-size: 2rem;
+    color: #ddd;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .upi-qr-form {
+    max-width: 200px;
+  }
+
+  .upi-qr-form .form-control {
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .upi-qr-form .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .dropdown-menu {
+    min-width: 280px !important;
+  }
+
+  /* QR Code container styles */
+  .qr-container {
+    background: white;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* QR Code image styles */
+  .qr-container img {
+    display: block;
+    background: white;
+  }
+
+  /* Ensure QR code renders sharply */
+  img[alt="UPI QR Code"],
+  img[alt="UPI QR Code Preview"] {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Ensure QR code displays properly */
+  img[alt="UPI QR Code"],
+  img[alt="UPI QR Code Preview"] {
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+  }
+</style>
+
+</head>
+<body>
+ 
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group search-container">
+              <form action="{% url 'search' %}" method="GET" class="search-form">
+                <input type="text" class="form-control" id="navbar-search-input" name="query" placeholder="Search vendors, services, products..." aria-label="search" aria-describedby="search">
+              </form>
+              <div class="input-group-prepend" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item dropdown">
+            <a class="nav-link count-indicator dropdown-toggle position-relative" id="notificationDropdown" href="#" data-toggle="dropdown">
+              <i class="icon-bell mx-0"></i>
+              {% if unread_notifications_count > 0 %}
+                <span class="notification-badge">{{ unread_notifications_count }}</span>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown notification-dropdown" aria-labelledby="notificationDropdown">
+              <p class="mb-0 font-weight-normal dropdown-header">Notifications</p>
+              {% for notification in notifications %}
+                <a class="dropdown-item notification-item {% if not notification.is_read %}unread{% endif %}">
+                  <div class="d-flex align-items-center">
+                    <div class="notification-icon bg-{% if notification.is_read %}light{% else %}primary{% endif %}">
+                      <i class="ti-info-alt mx-0"></i>
+                    </div>
+                    <div class="notification-content flex-grow-1">
+                      <h6 class="preview-subject">{{ notification.message }}</h6>
+                      <p class="notification-time mb-0">
+                        {{ notification.timestamp|timesince }} ago
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              {% empty %}
+                <a class="dropdown-item notification-item">
+                  <div class="d-flex align-items-center justify-content-center">
+                    <p class="mb-0 text-muted py-2">
+                      No new notifications
+                    </p>
+                  </div>
+                </a>
+              {% endfor %}
+              <a href="{% url 'vendor_notifications' %}" class="view-all-link">
+                View All Notifications
+              </a>
+            </div>
+          </li>
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              {% if user.profile_image %}
+                <img src="{{ user.profile_image.url }}" alt="profile"/>
+              {% else %}
+                <img src="/media/assets1/images/default_profile.png" alt="profile"/>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item d-flex flex-column">
+                {% if user.profile_image %}
+                  <img src="{{ user.profile_image.url }}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 70%;">
+                {% else %}
+                  <img src="/media/assets1/images/default_profile.png" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 70%;">
+                {% endif %}
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Shop Name:</strong> {{ vendor.business_name }}</p>
+                <p><strong>User Type:</strong> {{ user.user_type }}</p>
+                
+                <!-- QR Code Section -->
+                <div class="mt-3">
+                    <h6 class="text-center mb-2">UPI QR Code</h6>
+                    {% if vendor.upi_qr_code %}
+                        <div class="text-center mb-2">
+                            <div style="width: 200px; height: 200px; margin: 0 auto; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img src="{{ vendor.upi_qr_code.url }}" alt="UPI QR Code" 
+                                     style="width: 100%; height: 100%; object-fit: contain; background: white;">
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No QR code uploaded yet</p>
+                    {% endif %}
+                    <form id="qrCodeForm" enctype="multipart/form-data" class="px-2">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="file" class="form-control form-control-sm" name="upi_qr_code" 
+                                   accept="image/*" onchange="previewQRCode(this)">
+                            <small class="text-muted">Upload your UPI QR code (JPG, PNG) - Square format recommended</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm btn-block mt-2">
+                            {% if vendor.upi_qr_code %}Update{% else %}Upload{% endif %} QR Code
+                        </button>
+                    </form>
+                    <div class="qr-preview mb-2 text-center" id="qr-preview" style="display: none;">
+                        <div style="width: 200px; height: 200px; margin: 0 auto; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img id="qr-preview-img" src="" alt="UPI QR Code Preview" 
+                                 style="width: 100%; height: 100%; object-fit: contain; background: white;">
+                        </div>
+                    </div>
+                </div>
+                
+                <span class="my-details" onclick="toggleInfo(event)">My Details</span>
+                <div class="customer-info" id="customer-info">
+                    <p><strong>Contact:</strong> {{ vendor.contact_number }}</p>
+                    <p><strong>User Type:</strong> {{ user.user_type }}</p>
+                    <p><strong>Address:</strong> <span class="location-text">{{ vendor.location_name }}</p>
+                    <p><strong>Availability Status:</strong> 
+                        <select class="form-control availability-status" data-vendor-id="{{ vendor.id }}">
+                            <option value="Available" {% if vendor.availability_status == 'Available' %}selected{% endif %}>Available</option>
+                            <option value="Busy" {% if vendor.availability_status == 'Busy' %}selected{% endif %}>Busy</option>
+                            <option value="Offline" {% if vendor.availability_status == 'Offline' %}selected{% endif %}>Offline</option>
+                        </select>
+                    </p>
+                </div>
+                <div class="dropdown-divider"></div>
+              </a>
+              <a class="dropdown-item" href="{% url 'logout' %}">
+                <i class="ti-power-off text-primary me-2"></i> Logout
+              </a>
+            </div>
+          </li>
+          <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="ti-settings"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close ti-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      <div id="right-sidebar" class="settings-panel">
+        <i class="settings-close ti-close"></i>
+        <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">  
+        </ul>
+        <div class="tab-content" id="setting-content">
+          <div class="tab-pane fade show active" id="notifications" role="tabpanel" aria-labelledby="notifications">
+            <div class="notification-header py-3 px-3 d-flex justify-content-between align-items-center border-bottom">
+              <h6 class="mb-0 font-weight-bold text-primary">Notifications</h6>
+              <span class="notification-count badge badge-pill badge-primary">{{ unread_notifications_count }}</span>
+            </div>
+            
+            <div class="notification-list p-2">
+              {% if notifications %}
+              <ul class="icon-data-list notification-items">
+                {% for notification in notifications %}
+                <li class="notification-item mb-3 p-2 rounded {% if not notification.is_read %}unread-notification{% endif %}">
+                  <div class="d-flex">
+                    {% if notification.sender.profile_image %}
+                    <img src="{{ notification.sender.profile_image.url }}" alt="user" class="rounded-circle notification-avatar" width="40" height="40">
+                    {% else %}
+                    <div class="notification-avatar-placeholder rounded-circle">
+                      <i class="ti-user"></i>
+                    </div>
+                    {% endif %}
+                    <div class="ml-3 notification-content flex-grow-1">
+                      <p class="text-primary mb-1 font-weight-bold">{{ notification.sender.get_full_name }}</p>
+                      <p class="mb-0 notification-message">{{ notification.message }}</p>
+                      <div class="d-flex justify-content-between align-items-center mt-1">
+                        <small class="text-muted">{{ notification.timestamp|timesince }} ago</small>
+                        {% if not notification.is_read %}
+                        <form method="POST" action="{% url 'mark_notification_read' notification.id %}" class="mark-read-form">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2">Mark Read</button>
+                        </form>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              <div class="text-center mt-3">
+                <a href="{% url 'vendor_notifications' %}" class="btn btn-primary btn-sm btn-rounded">View All Notifications</a>
+              </div>
+              {% else %}
+              <div class="empty-notification text-center py-5">
+                <i class="ti-bell empty-icon"></i>
+                <p class="text-muted mt-2">No new notifications</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+       
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'add_business_info' %}">
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Add Business Info</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+      
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'vendor_notifications' %}" >
+              <i class="icon-bell menu-icon"></i>
+              <span class="menu-title">View Notifications</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'booking_history' %}">
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Booking History</span>
+              <i class="menu-arrow"></i>
+            </a>
+          </li>
+    
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+                <div class="d-flex align-items-start justify-content-between">
+                  <h3 class="font-weight-bold" style="margin-top: -5px; margin-left: -5px;">{{ vendor.business_name }}</h3>
+
+                    <h3 class="font-weight-bold" style="margin-top: -5px; margin-left: -5px;">{{user.user_type}} {{ user.first_name }}</h3>
+
+                    <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="mdi mdi-calendar"></i> <span id="currentDate"></span>
+                    </button>
+                </div>
+            </div>                                            
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-xl-12 col-lg-12 col-md-12">
+                      <div class="card w-100" style="max-width: 100%; margin: 10px auto;">
+                          <div class="card-body">
+                                        {% if user.category == "grocery" %}
+                                        <h4 class="card-title text-center">Manage Shop Items</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl. No</th>
+                                                        <th>Product Name</th>
+                                                        <th>Price/kg/unit</th>
+                                                        <th>Quantity (kg)</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in shop_items %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td> 
+                                                        <td>{{ item.product_name }}</td>
+                                                        <td>{{ item.price }}</td>
+                                                        <td>{{ item.quantity }}</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editItemModal{{ item.id }}">
+                                                                Edit
+                                                            </button>
+                                                            <form method="POST" class="d-inline ml-2">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="delete_item">
+                                                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                                            </form>
+                                                            
+                                                            <!-- Edit Item Modal -->
+                                                            <div class="modal fade" id="editItemModal{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel{{ item.id }}" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="editItemModalLabel{{ item.id }}">Edit Product</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <form method="post">
+                                                                            <div class="modal-body">
+                                                                                {% csrf_token %}
+                                                                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                                                                <div class="form-group">
+                                                                                    <label for="product_name{{ item.id }}">Product Name</label>
+                                                                                    <input type="text" class="form-control" id="product_name{{ item.id }}" name="product_name" value="{{ item.product_name }}" required>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="price{{ item.id }}">Price (₹)</label>
+                                                                                    <input type="number" class="form-control" id="price{{ item.id }}" name="price" value="{{ item.price }}" step="0.01" required>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="quantity{{ item.id }}">Quantity in Stock</label>
+                                                                                    <input type="number" class="form-control" id="quantity{{ item.id }}" name="quantity" value="{{ item.quantity }}" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                                <button type="submit" class="btn btn-primary" name="update_item">Save Changes</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">No products available.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                
+                                            <!-- Button to toggle form -->
+                                            <button class="btn btn-primary btn-block mb-3" type="button" data-toggle="collapse" data-target="#addItemForm">
+                                                Add New Product
+                                            </button>
+                
+                                            <!-- Add Item Form in Dropdown -->
+                                            <div class="collapse" id="addItemForm">
+                                                <form method="POST" class="mb-3">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="add_item">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" name="product_name" placeholder="Product Name" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control" name="price" placeholder="Price" step="0.01" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control" name="quantity" placeholder="Quantity" min="1" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-block">Add Product</button>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                        
+                                    </div>
+                                    {%endif%}
+                                    <div class="card-body">
+                                      <div class="card-body">
+                                        {% if user.category == "service_based" %}
+                                        <h4 class="card-title text-center">Manage Services</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sl. No</th>
+                                                        <th>🛠️ Service Name</th>
+                                                        <th>🧾 Description</th>
+                                                        <th>💰 Price </th>
+                                                        <th>📡 Availability</th>
+                                                        <th>⚙️ Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for service in services %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td> 
+                                                        <td>{{ service.service_name }}</td>
+                                                        <td>{{ service.description|default:"—" }}</td>
+                                                        <td>{{ service.price }}</td>
+                                                        <td>
+                                                            <form method="post" class="d-inline availability-form" data-service-id="{{ service.id }}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                                <input type="hidden" name="is_available" value="{% if service.is_available %}False{% else %}True{% endif %}">
+                                                                <button type="submit" class="btn btn-sm {% if service.is_available %}btn-success{% else %}btn-danger{% endif %}">
+                                                                    {% if service.is_available %}✅ Available{% else %}❌ Booked{% endif %}
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editServiceModal{{ service.id }}">
+                                                                ✏️ Edit
+                                                            </button>
+                                                            <form method="POST" class="d-inline ml-2">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="delete_service">
+                                                                <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                                <button type="submit" class="btn btn-danger btn-sm">🗑️ Remove</button>
+                                                            </form>
+                                                            
+                                                            <!-- Edit Service Modal -->
+                                                            <div class="modal fade" id="editServiceModal{{ service.id }}" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel{{ service.id }}" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="editServiceModalLabel{{ service.id }}">Edit Service</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <form method="post">
+                                                                            <div class="modal-body">
+                                                                                {% csrf_token %}
+                                                                                <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                                                <div class="form-group">
+                                                                                    <label for="service_name{{ service.id }}">Service Name</label>
+                                                                                    <input type="text" class="form-control" id="service_name{{ service.id }}" name="service_name" value="{{ service.service_name }}" required>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="description{{ service.id }}">Description</label>
+                                                                                    <textarea class="form-control" id="description{{ service.id }}" name="description" rows="3" required>{{ service.description }}</textarea>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="price{{ service.id }}">Price (₹)</label>
+                                                                                    <input type="number" class="form-control" id="price{{ service.id }}" name="price" value="{{ service.price }}" step="0.01" required>
+                                                                                </div>
+                                                                                <div class="form-group form-check">
+                                                                                    <input type="checkbox" class="form-check-input" id="is_available{{ service.id }}" name="is_available" {% if service.is_available %}checked{% endif %}>
+                                                                                    <label class="form-check-label" for="is_available{{ service.id }}">Available</label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                                <button type="submit" class="btn btn-primary" name="update_service">Save Changes</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">No services available.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                    
+                                            <!-- Button to toggle Add Service Form -->
+                                            <button class="btn btn-primary btn-block mb-3" type="button" data-toggle="collapse" data-target="#addServiceForm">
+                                                ➕ Add New Service
+                                            </button>
+                                    
+                                            <!-- Add Service Form -->
+                                            <div class="collapse" id="addServiceForm">
+                                                <form method="POST" class="mb-3">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="add_service">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" name="service_name" placeholder="e.g., Plumbing Fix, Cab Ride to Railway Station" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="description" placeholder="Describe the service (optional)" rows="3"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control" name="price" placeholder="e.g., 150, 200.00" step="0.01" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-block">✅ Add Service</button>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                        {% endif %}
+                                    </div>
+                                    
+
+                                </div>
+
+                                <div class="card-body">
+                                  <div class="card-body">
+                                  {% if user.category == "ride_service" %}
+                                    <h4 class="card-title text-center">Manage Services</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl. No</th>
+                                                    <th>🚗  Vehicle Type</th>
+                                                    <th>💺 Seats</th>
+                                                    <th>💰 Price ₹ per/km</th>
+                                                    <th>📡 Availability</th>
+                                                    <th>⚙️ Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for service in services %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td> 
+                                                    <td>{{ service.service_name }}</td>
+                                                    <td>{{ service.description|default:"—" }}</td>
+                                                    <td>{{ service.price }}</td>
+                                                    <td>
+                                                        <form method="post" class="d-inline availability-form" data-service-id="{{ service.id }}">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                            <input type="hidden" name="is_available" value="{% if service.is_available %}False{% else %}True{% endif %}">
+                                                            <button type="submit" class="btn btn-sm {% if service.is_available %}btn-success{% else %}btn-danger{% endif %}">
+                                                                {% if service.is_available %}✅ Available{% else %}❌ Booked{% endif %}
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editServiceModal{{ service.id }}">
+                                                            ✏️ Edit
+                                                        </button>
+                                                        <form method="POST" class="d-inline ml-2">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="delete_service">
+                                                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                            <button type="submit" class="btn btn-danger btn-sm">🗑️ Remove</button>
+                                                        </form>
+                                                        
+                                                        <!-- Edit Service Modal -->
+                                                        <div class="modal fade" id="editServiceModal{{ service.id }}" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel{{ service.id }}" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="editServiceModalLabel{{ service.id }}">Edit Service</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <form method="post">
+                                                                        <div class="modal-body">
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                                                                            <div class="form-group">
+                                                                                <label for="service_name{{ service.id }}">Service Name</label>
+                                                                                <input type="text" class="form-control" id="service_name{{ service.id }}" name="service_name" value="{{ service.service_name }}" required>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="description{{ service.id }}">Description</label>
+                                                                                <textarea class="form-control" id="description{{ service.id }}" name="description" rows="3" required>{{ service.description }}</textarea>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="price{{ service.id }}">Price (₹)</label>
+                                                                                <input type="number" class="form-control" id="price{{ service.id }}" name="price" value="{{ service.price }}" step="0.01" required>
+                                                                            </div>
+                                                                            <div class="form-group form-check">
+                                                                                <input type="checkbox" class="form-check-input" id="is_available{{ service.id }}" name="is_available" {% if service.is_available %}checked{% endif %}>
+                                                                                <label class="form-check-label" for="is_available{{ service.id }}">Available</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                            <button type="submit" class="btn btn-primary" name="update_service">Save Changes</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No services available.</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                
+                                        <!-- Button to toggle Add Service Form -->
+                                        <button class="btn btn-primary btn-block mb-3" type="button" data-toggle="collapse" data-target="#addServiceForm">
+                                            ➕ Add New Service
+                                        </button>
+                                
+                                        <!-- Add Service Form -->
+                                        <div class="collapse" id="addServiceForm">
+                                            <form method="POST" class="mb-3">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="add_service">
+                                                {%if user.category != "ride_service"%}
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" name="service_name" placeholder="e.g., Plumbing Fix, Cab Ride to Railway Station" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="description" placeholder="Describe the service (optional)" rows="3"></textarea>
+                                                </div>
+                                                {%elif user.category == "ride_service"%}
+                                                <div class="form-group">
+                                                  <input type="text" class="form-control" name="service_name" placeholder="Enter the vehicle type" required>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <textarea class="form-control" name="description" placeholder="enter Number of Seats" rows="3"></textarea>
+                                              </div>
+                                              {% endif %}
+                                                <div class="form-group">
+                                                    <input type="number" class="form-control" name="price" placeholder="e.g., 150, 200.00" step="0.01" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-success btn-block">✅ Add Service</button>
+                                            </form>
+                                        </div>
+                                    </div> 
+                                    {% endif %}
+                                </div>
+                                
+
+                            </div>
+                            </div>
+                        </div>
+          
+
+            {% if user.category == "grocery" %}
+            <h4>Recent Bookings from Customers</h4>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                  <thead>
+                      <tr>
+                          <th>Customer Name</th>
+                          <th>Items & Prices</th>
+                          <th>Total Price</th>
+                          <th>Service Type</th>
+                          <th>Address</th>
+                          <th>Booking Time</th>
+                          <th>Delivered Time</th>
+                          <th>Status</th>
+                          <th>Update Status</th>
+                          <th>Payment Status</th>
+                          <th>Update Payment</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for booking in bookings %}
+                      <tr data-status="{{ booking.status }}">
+                          <td>{{ booking.customer.customer.username }}</td>
+                          <td>
+                            {% for item in booking.items.all %}
+                                {{ item.item.product_name }} ({{ item.quantity }}) x ₹{{ item.price }}<br>
+                            {% endfor %}
+                          </td>
+                          <td>₹{{ booking.total_price }}</td>
+                          <td>{{ booking.service_type }}</td>
+                          <td>{{ booking.address }}</td>
+                          <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>
+                          <td>{{ booking.delivered_time|date:"M d, Y h:i A"|default:"-" }}</td>
+                          <td>
+                            {% if booking.status == "Pending" %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif booking.status == "Confirmed" %}
+                                <span class="badge bg-success">Confirmed</span>
+                            {% elif booking.status == "Delivered" %}
+                                <span class="badge bg-success">Delivered</span>
+                            {% elif booking.status == "Cancelled" %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ booking.status }}</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            <form method="post" action="{% url 'vendor_dashboard' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="Pending" {% if booking.status == "Pending" %}selected{% endif %}>Pending</option>
+                                    <option value="Confirmed" {% if booking.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                                    <option value="Delivered" {% if booking.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                    <option value="Cancelled" {% if booking.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                </select>
+                                <button type="submit" name="update_booking_status" class="btn btn-sm btn-primary mt-1">Update</button>
+                            </form>
+                          </td>
+                          <td>
+                            {% if booking.payment_status == "pending" %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif booking.payment_status == "completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif booking.payment_status == "failed" %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% elif booking.payment_status == "refunded" %}
+                                <span class="badge bg-info">Refunded</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ booking.payment_status }}</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            <form method="post" action="{% url 'vendor_dashboard' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                <select name="payment_status" class="form-select form-select-sm">
+                                    <option value="pending" {% if booking.payment_status == "pending" %}selected{% endif %}>Pending</option>
+                                    <option value="completed" {% if booking.payment_status == "completed" %}selected{% endif %}>Completed</option>
+                                    <option value="failed" {% if booking.payment_status == "failed" %}selected{% endif %}>Failed</option>
+                                    <option value="refunded" {% if booking.payment_status == "refunded" %}selected{% endif %}>Refunded</option>
+                                </select>
+                                <button type="submit" name="update_payment_status" class="btn btn-sm btn-primary mt-1">Update</button>
+                            </form>
+                          </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                          <td colspan="11" class="text-center">No bookings available.</td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+
+          {% elif user.category == "service_based" %}
+<h4>Customer Bookings (Service-Based)</h4>
+<div class="table-responsive">
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th>Customer Name</th>
+              <th>Items</th>
+              <th>Total Price</th>
+              <th>Customer Location</th>            
+              <th>Booking Time</th>
+              <th>Complete Time</th>
+              <th>Status</th>
+              <th>Update Status</th>
+              <th>Payment Status</th>
+              <th>Update Payment</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for booking in service_bookings %}         
+         <tr data-status="{{ booking.status }}">
+              <td>{{ booking.customer.customer.username }}</td>
+              <td>{{ booking.service.service_name }}</td>
+              <td>₹{{ booking.total_price }}</td>
+              <td>{{ booking.address }}</td>
+              <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>
+              <td>{{ booking.complete_time|date:"M d, Y h:i A"|default:"-" }}</td>
+              <td>
+                {% if booking.status == "Pending" %}
+                    <span class="badge bg-warning">Pending</span>
+                {% elif booking.status == "Confirmed" %}
+                    <span class="badge bg-success">Confirmed</span>
+                {% elif booking.status == "Completed" %}
+                    <span class="badge bg-success">Completed</span>
+                {% elif booking.status == "Cancelled" %}
+                    <span class="badge bg-danger">Cancelled</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ booking.status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{% url 'vendor_dashboard' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="service_booking_id" value="{{ booking.id }}">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="Pending" {% if booking.status == "Pending" %}selected{% endif %}>Pending</option>
+                        <option value="Confirmed" {% if booking.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                        <option value="Completed" {% if booking.status == "Completed" %}selected{% endif %}>Completed</option>
+                        <option value="Cancelled" {% if booking.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                    </select>
+                    <button type="submit" name="update_service_booking_status" class="btn btn-sm btn-primary mt-1">Update</button>
+                </form>
+              </td>
+              <td>
+                {% if booking.payment_status == "pending" %}
+                    <span class="badge bg-warning">Pending</span>
+                {% elif booking.payment_status == "completed" %}
+                    <span class="badge bg-success">Completed</span>
+                {% elif booking.payment_status == "failed" %}
+                    <span class="badge bg-danger">Failed</span>
+                {% elif booking.payment_status == "refunded" %}
+                    <span class="badge bg-info">Refunded</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ booking.payment_status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{% url 'vendor_dashboard' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <select name="payment_status" class="form-select form-select-sm">
+                        <option value="pending" {% if booking.payment_status == "pending" %}selected{% endif %}>Pending</option>
+                        <option value="completed" {% if booking.payment_status == "completed" %}selected{% endif %}>Completed</option>
+                        <option value="failed" {% if booking.payment_status == "failed" %}selected{% endif %}>Failed</option>
+                        <option value="refunded" {% if booking.payment_status == "refunded" %}selected{% endif %}>Refunded</option>
+                    </select>
+                    <button type="submit" name="update_payment_status" class="btn btn-sm btn-primary mt-1">Update</button>
+                </form>
+              </td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="10" class="text-center">No bookings available.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+
+{% elif user.category == "ride_service" %}
+<h4>Customer Bookings (Transport)</h4>
+<div class="table-responsive">
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th>Customer Name</th>
+              <th>Vehicle Type</th>
+              <th>Seats</th>
+              <th>Total Price</th>          
+              <th>Pick Up</th>
+              <th>Drop Off</th>             
+              <th>Booking Time</th>
+              <th>Complete Time</th>
+              <th>Status</th>
+              <th>Update Status</th>
+              <th>Payment Status</th>
+              <th>Update Payment</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for booking in service_bookings %}         
+         <tr data-status="{{ booking.status }}">
+              <td>{{ booking.customer.customer.username }}</td>
+              <td>{{ booking.service.service_name }}</td>
+              <td>{{ booking.service.description }}</td>
+              <td>₹{{ booking.total_price }}</td>           
+              <td>{{ booking.pickup_location }}</td>
+              <td>{{ booking.dropoff_location }}</td>           
+              <td>{{ booking.booking_time|date:"M d, Y h:i A" }}</td>
+              <td>{{ booking.complete_time|date:"M d, Y h:i A"|default:"-" }}</td>
+              <td>
+                {% if booking.status == "Pending" %}
+                    <span class="badge bg-warning">Pending</span>
+                {% elif booking.status == "Confirmed" %}
+                    <span class="badge bg-success">Confirmed</span>
+                {% elif booking.status == "Completed" %}
+                    <span class="badge bg-success">Completed</span>
+                {% elif booking.status == "Cancelled" %}
+                    <span class="badge bg-danger">Cancelled</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ booking.status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{% url 'vendor_dashboard' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="service_booking_id" value="{{ booking.id }}">
+                  <select name="status" class="form-select form-select-sm">
+                      <option value="Pending" {% if booking.status == "Pending" %}selected{% endif %}>Pending</option>
+                      <option value="Confirmed" {% if booking.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                      <option value="Completed" {% if booking.status == "Completed" %}selected{% endif %}>Completed</option>
+                      <option value="Cancelled" {% if booking.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                  </select>
+                  <button type="submit" name="update_service_booking_status" class="btn btn-sm btn-primary mt-1">Update</button>
+              </form>
+              </td>
+              <td>
+                {% if booking.payment_status == "pending" %}
+                    <span class="badge bg-warning">Pending</span>
+                {% elif booking.payment_status == "completed" %}
+                    <span class="badge bg-success">Completed</span>
+                {% elif booking.payment_status == "failed" %}
+                    <span class="badge bg-danger">Failed</span>
+                {% elif booking.payment_status == "refunded" %}
+                    <span class="badge bg-info">Refunded</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ booking.payment_status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="post" action="{% url 'vendor_dashboard' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <select name="payment_status" class="form-select form-select-sm">
+                        <option value="pending" {% if booking.payment_status == "pending" %}selected{% endif %}>Pending</option>
+                        <option value="completed" {% if booking.payment_status == "completed" %}selected{% endif %}>Completed</option>
+                        <option value="failed" {% if booking.payment_status == "failed" %}selected{% endif %}>Failed</option>
+                        <option value="refunded" {% if booking.payment_status == "refunded" %}selected{% endif %}>Refunded</option>
+                    </select>
+                    <button type="submit" name="update_payment_status" class="btn btn-sm btn-primary mt-1">Update</button>
+                </form>
+              </td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="12" class="text-center">No transport bookings available.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+{% endif %}
+          </div>
+     </div>                   
+               </div>
+            </div>
+          
+        
+   
+         
+      
+      
+   
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>   
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="/media/assets1/vendors/chart.js/Chart.min.js"></script>
+  <script src="/media/assets1/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="/media/assets1/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="/media/assets1/js/dataTables.select.min.js"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="/media/assets1/js/dashboard.js"></script>
+  <script src="/media/assets1/js/Chart.roundedBarCharts.js"></script>
+  <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(() => {
+      document.querySelectorAll("tr[data-status='Delivered']").forEach(row => {
+        row.remove();
+      });
+    }, 120000); // 2 minutes = 120000ms
+  });
+
+
+function updateAvailabilityStatus() {
+        // Get the form element and the selected value
+        const form = document.getElementById('update-status-form');
+        const availabilityStatus = document.getElementById('availability-status').value;
+        
+        // Create a new FormData object
+        const formData = new FormData();
+        formData.append('availability_status', availabilityStatus);
+        formData.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+        
+        // Create an XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '', true);  // Send the form data to the current page (empty URL will send to the same URL)
+        
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Optionally, update the UI or show a success message here
+                console.log('Availability status updated successfully');
+            } else {
+                console.error('Error updating availability status');
+            }
+        };
+        
+        // Send the form data via AJAX
+        xhr.send(formData);
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      let today = new Date();
+      let formattedDate = today.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+      document.getElementById("currentDate").textContent = `Today (${formattedDate})`;
+    });
+
+    function toggleInfo(event) {
+    event.stopPropagation(); // Prevents event bubbling
+    var infoSection = document.getElementById("customer-info");
+
+    // Toggle visibility
+    if (infoSection.style.display === "block") {
+        infoSection.style.display = "none";
+    } else {
+        infoSection.style.display = "block";
+        
+        // Ensure logout button remains visible by checking dropdown height
+        var dropdownMenu = document.querySelector(".dropdown-menu");
+        dropdownMenu.scrollTop = dropdownMenu.scrollHeight; // Scroll to bottom
+    }
+}
+     
+
+</script>
+  
+  <!-- End custom js for this page-->
+  <!-- Notification Sound and Real-time Notification Checking -->
+  <audio id="notification-sound" src="/media/assets1/sounds/notification.mp3" preload="auto"></audio>
+  <script>
+    // Store current notification count
+    let currentNotificationCount = parseInt('{{ unread_notifications_count }}');
+    
+    // Function to check for new notifications
+    function checkForNewNotifications() {
+      fetch('/check-new-notifications/')
+        .then(response => response.json())
+        .then(data => {
+          // If there are new notifications
+          if (data.unread_count > currentNotificationCount) {
+            // Play notification sound
+            document.getElementById('notification-sound').play();
+            
+            // Update the badge count
+            const badgeElement = document.querySelector('.notification-badge');
+            if (badgeElement) {
+              badgeElement.textContent = data.unread_count;
+              badgeElement.style.display = 'block';
+            } else if (data.unread_count > 0) {
+              // Create badge if it doesn't exist
+              const notificationIcon = document.querySelector('#notificationDropdown');
+              const badge = document.createElement('span');
+              badge.className = 'notification-badge';
+              badge.textContent = data.unread_count;
+              notificationIcon.appendChild(badge);
+            }
+            
+            // Update sidebar notification count if it exists
+            const sidebarCount = document.querySelector('.notification-count');
+            if (sidebarCount) {
+              sidebarCount.textContent = data.unread_count;
+            }
+            
+            // Update current count
+            currentNotificationCount = data.unread_count;
+            
+            // Refresh the notifications list if needed
+            if (data.should_refresh) {
+              location.reload();
+            }
+          }
+        })
+        .catch(error => console.error('Error checking notifications:', error));
+    }
+    
+    // Check for new notifications every 30 seconds
+    setInterval(checkForNewNotifications, 30000);
+
+      // Search vendors function
+  function searchVendors() {
+    const searchInput = document.getElementById('vendorSearch').value.toLowerCase();
+    const vendors = document.querySelectorAll('.vendor-item');
+    
+    vendors.forEach(vendor => {
+      const vendorName = vendor.dataset.name;
+      const vendorContent = vendor.textContent.toLowerCase();
+      
+      if (vendorName.includes(searchInput) || vendorContent.includes(searchInput)) {
+        vendor.style.display = '';
+      } else {
+        vendor.style.display = 'none';
+      }
+    });
+  }
+  </script>
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    setInterval(() => {
+      document.querySelectorAll("tr[data-status='Delivered']").forEach(row => {
+        setTimeout(() => {
+          row.remove();
+        }, 120000); // Remove after 2 minutes
+      });
+    }, 5000); // Check every 5 seconds
+  });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle availability toggle forms
+    document.querySelectorAll('.availability-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const button = form.querySelector('button');
+            const serviceId = form.dataset.serviceId;
+            const isAvailable = form.querySelector('input[name="is_available"]').value === 'True';
+            
+            // Disable button during submission
+            button.disabled = true;
+            
+            // Send AJAX request
+            fetch(`/update-service-availability/${serviceId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    is_available: isAvailable
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button appearance
+                    button.className = `btn btn-sm ${isAvailable ? 'btn-success' : 'btn-danger'}`;
+                    button.innerHTML = isAvailable ? '✅ Available' : '❌ Booked';
+                    // Update the hidden input value for next toggle
+                    form.querySelector('input[name="is_available"]').value = isAvailable ? 'False' : 'True';
+                    
+                    // Update vendor status in the profile dropdown if it exists
+                    const vendorStatusSelect = document.querySelector('.availability-status');
+                    if (vendorStatusSelect) {
+                        vendorStatusSelect.value = data.vendor_status;
+                        // Update the status badge color
+                        const statusBadge = document.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = `badge bg-${data.vendor_status === 'Available' ? 'success' : 
+                                data.vendor_status === 'Busy' ? 'warning' : 'danger'}`;
+                            statusBadge.textContent = data.vendor_status;
+                        }
+                    }
+                } else {
+                    alert('Failed to update availability: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating availability');
+            })
+            .finally(() => {
+                button.disabled = false;
+            });
+        });
+    });
+});
+</script>
+<script>
+function previewQRCode(input) {
+    const preview = document.getElementById('qr-preview');
+    const previewImg = document.getElementById('qr-preview-img');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+$(document).ready(function() {
+    // Handle QR code upload
+    $('#qrCodeForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: '/update_qr_code/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    // Show success message
+                    alert('QR code updated successfully');
+                    // Reload the page to show the new QR code
+                    location.reload();
+                } else {
+                    alert(response.message || 'Error updating QR code');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Error updating QR code: ' + error);
+            }
+        });
+    });
+});
+</script>
+</html>

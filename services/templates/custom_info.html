@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Add Your Info</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="/media/assets1/vendors/feather/feather.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/media/assets1/vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/media/assets1/css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/media/assets1/images/my_logo3.png" />
+  <style>
+ body {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      font-family: 'Times New Roman', sans-serif;
+    }
+    
+    .auth-form-light {
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      background: white;
+      padding: 40px;
+      border: 2px solid #dee2e6;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 2px solid #ced4da;
+      padding: 14px;
+      font-size: 16px;
+      transition: border-color 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #007bff, #0056b3);
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #0056b3, #003f8a);
+      transform: scale(1.05);
+    }
+
+    .location-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .get-location-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .get-location-btn:hover {
+      background: #218838;
+      transform: scale(1.05);
+    }
+
+    .error-text {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <!-- partial:/media/assets1/partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="#"><img src="/media/assets1/images/qc3.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/media/assets1/images/my_logo3.png" alt="logo"/></a>
+      </div>
+
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="icon-menu"></span>
+          </button>
+       
+        <ul class="navbar-nav navbar-nav-right">
+          {% if user.profile_image %}
+          <img src="{{ user.profile_image.url }}" alt="profile"/>
+          {% else %}
+            <img src="/media/assets1/images/default_profile.png" alt="profile"/>
+          {% endif %}
+        </a>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% if user.user_type == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'customer_dashboard' %}{% endif %}" >
+              <i class="icon-grid menu-icon"></i>
+              <span class="menu-title">Back to Dashboard</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+    
+                    <label for="phone_no">📞 Contact Number:</label>
+                    <input type="text" name="phone_no" class="form-control mb-3" value="{{ customer_info.contact_no }}" required>
+    
+                    <label for="permanent_address">🏠 Permanent Address:</label>
+                    <textarea name="permanent_address" class="form-control mb-3" required>{{ customer_info.permanent_address }}</textarea>
+    
+                    <label>📍 Current Location (Latitude, Longitude):</label>
+                    <div class="location-container mb-3">
+                      <input type="text" id="latitude" class="form-control" name="latitude" value="{{ customer_info.latitude }}" readonly required>
+                      <input type="text" id="longitude" class="form-control" name="longitude" value="{{ customer_info.longitude }}" readonly required>
+                      <button type="button" class="get-location-btn" onclick="getLocation()">📌 Get Location</button>
+                    </div>
+                    <p id="location-error" class="error-text"></p>
+    
+                    <label>📌 Location Name:</label>
+                    <input type="text" id="location_name" class="form-control mb-4" name="location_name" value="{{ customer_info.location_name }}" readonly required>
+    
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                  </form>
+
+               
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <script src="/media/assets1/vendors/js/vendor.bundle.base.js"></script>
+ 
+  <script src="/media/assets1/js/off-canvas.js"></script>
+  <script src="/media/assets1/js/hoverable-collapse.js"></script>
+  <script src="/media/assets1/js/template.js"></script>
+  <script src="/media/assets1/js/settings.js"></script>
+  <script src="/media/assets1/js/todolist.js"></script>
+ <script>
+   function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            document.getElementById("latitude").value = lat;
+            document.getElementById("longitude").value = lon;
+            document.getElementById("location-error").innerText = "";
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+              .then(response => response.json())
+              .then(data => {
+                document.getElementById("location_name").value = data.display_name || "Location not found";
+              })
+              .catch(() => {
+                document.getElementById("location_name").value = "Error fetching location";
+              });
+          },
+          function (error) {
+            let errorMessage = "Error getting location. Please enable location services.";
+            if (error.code === error.PERMISSION_DENIED) {
+              errorMessage = "Location access denied. Enable location services in browser settings.";
+            }
+            document.getElementById("location-error").innerText = errorMessage;
+          }
+        );
+      } else {
+        document.getElementById("location-error").innerText = "Geolocation is not supported by this browser.";
+      }
+    }
+ </script>
+</body>
+</html>

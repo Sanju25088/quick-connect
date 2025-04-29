@@ -1,0 +1,100 @@
+<div class="payment-method">
+    <h4>Payment Method</h4>
+    <div class="payment-options">
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="cod" checked>
+            <span>Cash on Delivery</span>
+        </label>
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="upi">
+            <span>UPI Payment</span>
+        </label>
+    </div>
+    <div id="upi-qr-container" style="display: none;">
+        <div class="qr-code-container">
+            <h5>Scan QR Code to Pay</h5>
+            {% if vendor.upi_qr_code %}
+                <img src="{{ vendor.upi_qr_code.url }}" alt="UPI QR Code" class="qr-code">
+            {% else %}
+                <p class="no-qr-message">QR code not available. Please contact vendor.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-method {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-options {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+    background: #e9ecef;
+}
+
+.payment-option input[type="radio"] {
+    margin: 0;
+}
+
+.qr-code-container {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.qr-code-container h5 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.qr-code {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.no-qr-message {
+    color: #dc3545;
+    font-style: italic;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+    const upiQrContainer = document.getElementById('upi-qr-container');
+
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'upi') {
+                upiQrContainer.style.display = 'block';
+            } else {
+                upiQrContainer.style.display = 'none';
+            }
+        });
+    });
+});
+</script> 
