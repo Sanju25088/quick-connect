@@ -1,7 +1,6 @@
 *.sql          # database dumps (optional, depends on your use)
 *.db           # if using SQLite, ignore database files
 .env           # environment variables (may contain DB passwords)
-__pycache__/   # Python cache
-*.pyc
+
 media/
 static/

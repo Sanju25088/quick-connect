@@ -7,7 +7,6 @@ urlpatterns = [
     path("", views.landing_page, name='landing_page'),  # Landing page as home page
     path("pages_login/", views.pages_login, name='pages_login'),
 
-    path("admin_register/", views.admin_register, name='admin_register'),
     path("admin_dashboard/", views.admin_dashboard, name='admin_dashboard'),
     path("new_vendor/", views.new_vendor, name='new_vendor'),
     path("new_customer/", views.new_customer, name='new_customer'),
