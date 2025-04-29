@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import dj_database_url
+from decouple import config
 import os
 from pathlib import Path
 
@@ -25,7 +27,9 @@ SECRET_KEY = 'django-insecure-n)^82^1n$$n_3%+a7*m$am58hjykb@lp9fuu)e^$h7^grau&sj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Application definition
@@ -41,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,18 +80,22 @@ WSGI_APPLICATION = 'quick_connect.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'quick_connect',
+#         'USER': 'root',
+#         'PASSWORD': 'Sanju@sys1',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             "init_command" : "SET foreign_key_checks = 0;"
+#     },
+# }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'quick_connect',
-        'USER': 'root',
-        'PASSWORD': 'Sanju@sys1',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            "init_command" : "SET foreign_key_checks = 0;"
-    },
-}
+    'default': dj_database_url.config(default=config('DATABASE_URL', default='mysql://root:Sanju@sys1@127.0.0.1:3306/quick_connect'))
 }
 
 # Password validation
