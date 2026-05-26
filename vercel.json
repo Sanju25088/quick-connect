@@ -18,11 +18,7 @@
     }
   ],
   "env": {
-    "DJANGO_SETTINGS_MODULE": {
-      "default": "quick_connect.settings"
-    },
-    "PYTHONPATH": {
-      "default": "/var/task"
-    }
+    "DJANGO_SETTINGS_MODULE": "quick_connect.settings",
+    "PYTHONPATH": "/var/task"
   }
 }
