@@ -22,12 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n)^82^1n$$n_3%+a7*m$am58hjykb@lp9fuu)e^$h7^grau&sj'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-n)^82^1n$$n_3%+a7*m$am58hjykb@lp9fuu)e^$h7^grau&sj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,quick-connect-phi.vercel.app").split(",")
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://quick-connect-phi.vercel.app",
+]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -60,7 +64,7 @@ ROOT_URLCONF = 'quick_connect.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,7 +99,10 @@ WSGI_APPLICATION = 'quick_connect.wsgi.application'
 # }
 
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL', default='mysql://root:Sanju@sys1@127.0.0.1:3306/quick_connect'))
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',  # Fallback to SQLite for local dev
+        conn_max_age=600
+    )
 }
 
 # Password validation
@@ -145,11 +152,11 @@ AUTH_USER_MODEL = 'services.CustomUser'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sanju.kulkarnicolab@gmail.com'
-EMAIL_HOST_PASSWORD = 'mmmt djcw txog dvvg' 
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='noreply@quickconnect.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 300
