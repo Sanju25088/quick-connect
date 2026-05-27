@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
   "builds": [
     {
       "src": "quick_connect/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.12"
+        "runtime": "python3.12",
+        "maxLambdaSize": "15mb"
       }
     }
   ],
@@ -17,8 +16,5 @@
       "dest": "quick_connect/wsgi.py"
     }
   ],
-  "env": {
-    "DJANGO_SETTINGS_MODULE": "quick_connect.settings",
-    "PYTHONPATH": "/var/task"
-  }
+  "buildCommand": "bash build_files.sh"
 }

@@ -30,16 +30,43 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-n)^82^1n$$n_3%+a7*m$am58hjykb@lp9fuu)e^$h7^grau&sj')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,quick-connect-phi.vercel.app").split(",")
+VERCEL_DOMAIN = (
+    os.getenv('VERCEL_URL')
+    or os.getenv('VERCEL_BRANCH_URL')
+    or os.getenv('VERCEL_PROJECT_PRODUCTION_URL', '')
+).strip().strip('/')
+
+
+# Add all possible Vercel domains and your main production domain
+DEFAULT_ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'testserver',
+    '.vercel.app',
+    'quick-connect.vercel.app',
+    'quick-connect-phi.vercel.app',
+]
+if VERCEL_DOMAIN:
+    DEFAULT_ALLOWED_HOSTS.append(VERCEL_DOMAIN)
+    DEFAULT_ALLOWED_HOSTS.append(VERCEL_DOMAIN.replace('https://', '').replace('http://', ''))
+
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', ','.join(DEFAULT_ALLOWED_HOSTS)).split(',') if host.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://quick-connect-phi.vercel.app",
+    'https://quick-connect-phi.vercel.app',
+    'https://quick-connect.vercel.app',
 ]
+if VERCEL_DOMAIN:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{VERCEL_DOMAIN}')
+    CSRF_TRUSTED_ORIGINS.append(f'http://{VERCEL_DOMAIN}')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 
 # Application definition
@@ -147,13 +174,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'services.CustomUser'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 
 
