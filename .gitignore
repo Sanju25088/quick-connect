@@ -1,8 +1,147 @@
-*.sql          # database dumps (optional, depends on your use)
-*.db           # if using SQLite, ignore database files
-.env           # environment variables (may contain DB passwords)
+# ===========================
+# PYTHON & VIRTUAL ENVIRONMENT
+# ===========================
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
 
-media/
-static/
+# ===========================
+# DJANGO
+# ===========================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+.django_cache
+
+# ===========================
+# IDE & EDITOR
+# ===========================
+.vscode/
+.vscode
+.idea/
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+*.iml
+
+# ===========================
+# OS
+# ===========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.pem
+*.key
+
+# ===========================
+# ENVIRONMENT & SECRETS
+# ===========================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+credentials/
+
+# ===========================
+# VERCEL & DEPLOYMENT
+# ===========================
 .vercel
-.env*
+.vercel/
+.next/
+out/
+dist/
+
+# ===========================
+# CACHE & TEMPORARY
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.cache
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===========================
+# TESTING
+# ===========================
+.coverage
+.pytest_cache
+htmlcov/
+.tox/
+.hypothesis/
+
+# ===========================
+# NODE (if using npm packages)
+# ===========================
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ===========================
+# MISC
+# ===========================
+.venv
+ENV
+/venv
+.Python
+*.orig
+*.bak
+*.backup
+*.tmp
+*.swp
+.vagrant
+.vagrant/
+*.zip
+*.rar
+*.tar.gz
+Dockerfile
+docker-compose.yml
